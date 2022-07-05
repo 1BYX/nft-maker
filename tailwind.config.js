@@ -1,7 +1,32 @@
 module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: '#000',
+        accent1: '#111111',
+        accent2: '#333333',
+        accent3: '#444444',
+        accent4: '#666666',
+        accent5: '#888888',
+        accent6: '#999999',
+        accent7: '#EAEAEA',
+        accent8: '#FAFAFA',
+        foreground: '#FFF',
+        highlightPink: '#FF0080',
+        highlightMagenta: '#EB367F',
+        highlightPurple: 'F81CE5',
+        highlightYellow: '#FFF500',
+        errorDark: '#E60000',
+        errorDefault: 'red',
+        warningLight: '#F7B955',
+        warningDefault: '#F5A623',
+        warningDark: '#AB570A',
+        successDark: '#0761D1',
+        successDefault: '#0070F3',
+        successLight: '#3291FF',
+      },
+    },
   },
-  plugins: [],
-};
+  plugins: [require('@tailwindcss/forms')],
+}
