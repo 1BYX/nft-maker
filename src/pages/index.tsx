@@ -10,7 +10,12 @@ import {
   MenuIcon,
   UserIcon,
   XIcon,
+  ArchiveIcon,
+  QuestionMarkCircleIcon,
+  PlusIcon,
 } from '@heroicons/react/outline'
+import Link from 'next/link'
+import NetworkDropdown from '../components/NetworkDropdown'
 
 const user = {
   name: 'Emily Selman',
@@ -19,15 +24,18 @@ const user = {
     'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }
 const navigation = [
-  { name: 'Home', href: '#', icon: HomeIcon },
-  { name: 'Trending', href: '#', icon: FireIcon },
-  { name: 'Bookmarks', href: '#', icon: BookmarkAltIcon },
-  { name: 'Messages', href: '#', icon: InboxIcon },
-  { name: 'Profile', href: '#', icon: UserIcon },
+  { name: 'create', href: '#', icon: PlusIcon },
+  { name: 'my archive', href: '#', icon: ArchiveIcon },
+  { name: 'help', href: '#', icon: QuestionMarkCircleIcon },
 ]
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [network, setNetwork] = useState('eth')
+
+  const chooseNetwork = (_network: string) => {
+    setNetwork(_network)
+  }
 
   return (
     <>
@@ -53,7 +61,7 @@ export default function Example() {
               leave='transition-opacity ease-linear duration-300'
               leaveFrom='opacity-100'
               leaveTo='opacity-0'>
-              <div className='fixed inset-0 bg-gray-600 bg-opacity-75' />
+              <div className='fixed inset-0 bg-opacity-50 bg-background' />
             </Transition.Child>
 
             <div className='fixed inset-0 z-40 flex'>
@@ -88,13 +96,15 @@ export default function Example() {
                     </div>
                   </Transition.Child>
                   <div className='pt-5 pb-4'>
-                    <div className='flex items-center flex-shrink-0 px-4'>
-                      <img
-                        className='w-auto h-8'
-                        src='../../ape.png'
-                        alt='Workflow'
-                      />
-                    </div>
+                    <Link href='/'>
+                      <div className='flex items-center flex-shrink-0 px-4 cursor-pointer'>
+                        <img
+                          className='w-auto h-8'
+                          src='../../ape.png'
+                          alt='Workflow'
+                        />
+                      </div>
+                    </Link>
                     <nav aria-label='Sidebar' className='mt-5'>
                       <div className='px-2 space-y-1'>
                         {navigation.map((item) => (
@@ -147,13 +157,15 @@ export default function Example() {
           <div className='flex flex-col w-20'>
             <div className='flex flex-col flex-1 min-h-0 overflow-y-auto bg-accent1'>
               <div className='flex-1'>
-                <div className='flex items-center justify-center py-4 bg-neutral-900'>
-                  <img
-                    className='w-auto h-8'
-                    src='../../ape.png'
-                    alt='Workflow'
-                  />
-                </div>
+                <Link href='/'>
+                  <div className='flex items-center justify-center py-4 cursor-pointer bg-neutral-900'>
+                    <img
+                      className='w-auto h-8'
+                      src='../../ape.png'
+                      alt='Workflow'
+                    />
+                  </div>
+                </Link>
                 <nav
                   aria-label='Sidebar'
                   className='flex flex-col items-center py-6 space-y-3'>
@@ -189,13 +201,15 @@ export default function Example() {
           {/* Mobile top navigation */}
           <div className='lg:hidden'>
             <div className='flex items-center justify-between px-4 py-2 bg-accent1 sm:px-6 lg:px-8'>
-              <div>
-                <img
-                  className='w-auto h-8'
-                  src='../../ape.png'
-                  alt='Workflow'
-                />
-              </div>
+              <Link href='/'>
+                <div className='cursor-pointer'>
+                  <img
+                    className='w-auto h-8'
+                    src='../../ape.png'
+                    alt='Workflow'
+                  />
+                </div>
+              </Link>
               <div>
                 <button
                   type='button'
@@ -221,8 +235,15 @@ export default function Example() {
 
             {/* Secondary column (hidden on smaller screens) */}
             <aside className='hidden lg:block lg:flex-shrink-0 lg:order-first'>
-              <div className='relative flex flex-col h-full overflow-y-auto border-r w-96 border-accent2'>
-                {/* Your content */}
+              <div className='relative flex flex-col h-full p-8 overflow-y-auto border-r w-96 border-accent1'>
+                <div className='grid grid-cols-2 text-center text-white'>
+                  <div className='grid items-center w-max justify-self-end'>
+                    {network}
+                  </div>
+                  <div className='w-max justify-self-end'>
+                    <NetworkDropdown chooseNetwork={chooseNetwork} />
+                  </div>
+                </div>
               </div>
             </aside>
           </main>
