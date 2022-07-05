@@ -1,8 +1,32 @@
+import { useEffect, useState } from 'react'
+
 const DisplayDataBar = () => {
+  const [progress, setProgress] = useState(25)
+
+  const updateProgress = () => {
+    setInterval(() => {
+      if (progress > 100) {
+      } else {
+        setProgress((prevProgress) => prevProgress + 1)
+      }
+    }, 100)
+  }
+
+  useEffect(() => {
+    // updateProgress()
+  }, [])
+
   return (
-    <div className='w-full h-full p-12'>
-      <div className='grid w-full py-8 border-b border-accent2 grid-cols-[1fr_max-content_max-content] items-center justify-end'>
-        <div className='w-full text-white justify-self-start'>hi</div>
+    <div className='w-full h-full p-8'>
+      <div className='grid w-full py-6 border-b border-accent2 grid-cols-[1fr_max-content_max-content] items-center justify-end'>
+        <div className='grid w-full grid-cols-[max-content_max-content] items-center gap-4 text-white justify-self-start'>
+          <div className='w-32 rounded-full h-2.5 bg-accent2'>
+            <div
+              className='bg-highlightYellow h-2.5 border border-highlightYellow rounded-full'
+              style={{ width: `${progress}%` }}></div>
+          </div>
+          <div>{progress}%</div>
+        </div>
         <div className='mr-10 w-max justify-self-end'>
           <button
             type='button'

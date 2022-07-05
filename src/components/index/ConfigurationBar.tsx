@@ -98,7 +98,7 @@ const ConfigurationBar = () => {
               name='email'
               id='email'
               className='block w-full rounded-md shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
-              placeholder='ipfs://NewUriToReplace'
+              placeholder='ipfs://newuritoreplace'
             />
           </div>
         </div>

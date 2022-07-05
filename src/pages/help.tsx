@@ -214,14 +214,13 @@ export default function Example() {
             <section
               aria-labelledby='primary-heading'
               className='flex flex-col flex-1 h-full min-w-0 overflow-y-auto lg:order-last'>
-              <CollectionViewBar />
               {/* Your content */}
             </section>
 
             {/* Secondary column (hidden on smaller screens) */}
             <aside className='hidden lg:block lg:flex-shrink-0 lg:order-first'>
               <div className='relative flex flex-col h-full p-8 overflow-y-auto border-r w-96 border-accent2'>
-                <CollectionsBar />
+                <h1 className='text-3xl text-accent7'>need help?</h1>
               </div>
             </aside>
           </main>
