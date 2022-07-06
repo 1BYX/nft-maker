@@ -211,14 +211,14 @@ export default function Example() {
             {/* Primary column */}
             <section
               aria-labelledby='primary-heading'
-              className='flex flex-col flex-1 h-full min-w-0 overflow-y-auto lg:order-last'>
+              className='flex flex-col flex-1 h-full min-w-0 overflow-y-auto lg:order-last bg-accent1'>
               <DisplayDataBar />
               {/* Your content */}
             </section>
 
             {/* Secondary column (hidden on smaller screens) */}
             <aside className='hidden lg:block lg:flex-shrink-0 lg:order-first'>
-              <div className='relative flex flex-col h-full p-8 overflow-y-auto border-r w-96 border-accent2'>
+              <div className='relative flex flex-col h-full p-8 overflow-y-auto border-r w-96 bg-accent1 border-accent2'>
                 <ConfigurationBar />
               </div>
             </aside>
