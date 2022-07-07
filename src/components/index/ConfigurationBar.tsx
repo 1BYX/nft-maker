@@ -271,5 +271,4 @@ const ConfigurationBar = () => {
     </div>
   )
 }
-
 export default ConfigurationBar
