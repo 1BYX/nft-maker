@@ -3,74 +3,152 @@ import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
 import _logger from 'next-auth/utils/logger'
+import {
+  IinitializeLayerData,
+  IinitialLayer,
+  IlayerData,
+} from '../../interfaces/Ilayers'
 
 interface IAddLayerSlideover {
   slideoverOpen: boolean
   toggleSlideover: (state: boolean) => void
+  updateLayerData: (_newLayerData: IlayerData) => void
 }
 
 const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
   slideoverOpen,
   toggleSlideover,
+  updateLayerData,
 }) => {
-  const saveLayer = () => {
-    // save logic
-    toggleSlideover(false)
-  }
-
   const [layerName, setLayerName] = useState('')
 
-  const [tempLayerAttributes, setTempLayerAttributes] = useState<Array<string>>(
-    ['']
-  )
+  const [tempLayerAttributes, setTempLayerAttributes] = useState<
+    Array<{
+      layer: string
+      name: string
+      image: string
+    }>
+  >([])
 
   const nuller = (e: any) => {
     e.target.value = null
   }
 
   const onFiles = (e: any) => {
-    if (!layerName || layerName === '') {
-      console.log('no layer name')
-      return
-    }
-    // console.log('hiihi')
-    console.log(e.target.files)
+    setTempLayerAttributes([])
 
     for (let i = 0; i < e.target.files.length; i++) {
       const reader = new FileReader()
 
       reader.addEventListener('load', () => {
         if (reader.result && typeof reader.result === 'string') {
-          console.log(reader.result)
-          localStorage.setItem(
-            `${layerName}/${e.target.files[i].name}`,
-            reader.result
-          )
+          setTempLayerAttributes((prevArray) => [
+            ...prevArray,
+            {
+              layer: layerName,
+              name: e.target.files[i].name,
+              image: reader.result as string,
+            },
+          ])
         } else {
         }
-        setTempLayerAttributes((prevArray) => [
-          ...prevArray,
-          e.target.files[i].name,
-        ])
       })
 
       reader.readAsDataURL(e.target.files[i])
 
       reader.removeEventListener('load', () => {
         if (reader.result && typeof reader.result === 'string') {
-          console.log(reader.result)
-          localStorage.setItem(
-            `${layerName}/${e.target.files[i].name}`,
-            reader.result
-          )
+          setTempLayerAttributes((prevArray) => [
+            ...prevArray,
+            {
+              layer: layerName,
+              name: e.target.files[i].name,
+              image: reader.result as string,
+            },
+          ])
         } else {
         }
-        setTempLayerAttributes((prevArray) => [
-          ...prevArray,
-          e.target.files[i].name,
-        ])
       })
     }
+  }
+
+  const cancelSubmission = () => {
+    toggleSlideover(false)
+  }
+
+  const saveSubmission = () => {
+    let exists = false
+    if (!layerName || layerName === '') {
+      console.log('no layer name')
+      return
+    }
+
+    let localAttributes = tempLayerAttributes
+    localAttributes.forEach((la) => {
+      la.layer = layerName
+    })
+    setTempLayerAttributes(localAttributes)
+
+    const unformattedLayers = localStorage.getItem('layers')
+
+    if (unformattedLayers) {
+      console.log('made it to if in saveSubmission function')
+      let layers = JSON.parse(unformattedLayers)
+
+      layers.forEach((l: any) => {
+        if (l.layerName === layerName) {
+          console.error('there already exists a layer with this name')
+          exists = true
+          return
+        }
+      })
+      if (!exists) {
+        layers = [
+          ...layers,
+          {
+            layerName: layerName,
+            attributes: [],
+          },
+        ]
+
+        tempLayerAttributes.forEach((tl) => {
+          layers[layers.length - 1].attributes = [
+            ...layers[layers.length - 1].attributes,
+            {
+              layer: layerName,
+              name: tl.name,
+              image: tl.image,
+            },
+          ]
+        })
+
+        const stringifiedLayers = JSON.stringify(layers)
+        localStorage.setItem('layers', stringifiedLayers)
+      } else {
+        return
+      }
+    } else {
+      console.log('made it to else in saveSubmission function')
+      let newLayers = [
+        {
+          layerName: layerName,
+          attributes: tempLayerAttributes,
+        },
+      ]
+      const stringifiedNewLayers = JSON.stringify(newLayers)
+      localStorage.setItem('layers', stringifiedNewLayers)
+    }
+    const unformattedNewLayerData = localStorage.getItem('layers')
+    if (unformattedNewLayerData) {
+      const newLayerData = JSON.parse(unformattedNewLayerData)
+      if (newLayerData) {
+        updateLayerData(newLayerData)
+      }
+    }
+
+    setTempLayerAttributes([])
+    setLayerName('')
+    toggleSlideover(false)
   }
 
   return (
@@ -148,8 +226,8 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                         </label>
                         <div className='grid w-full py-6 justify-items-end text-accent7'>
                           {tempLayerAttributes.map((a) => (
-                            <div key={a} className='w-max'>
-                              <u>{a}</u>
+                            <div key={a.name} className='w-max'>
+                              <u>{a.name}</u>
                             </div>
                           ))}
                         </div>
@@ -193,12 +271,12 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                       <button
                         type='button'
                         className='px-4 py-2 text-sm font-medium border shadow-sm text-accent7 border-accent7 bg-background hover:bg-accent1'
-                        onClick={() => toggleSlideover(false)}>
+                        onClick={cancelSubmission}>
                         cancel
                       </button>
                       <button
                         type='submit'
-                        onClick={() => saveLayer()}
+                        onClick={saveSubmission}
                         className='inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-black border border-transparent shadow-sm bg-accent7 hover:bg-accent6'>
                         save
                       </button>
@@ -215,5 +293,3 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
 }
 
 export default AddLayerSlideover
-
-// get from localstorage, put into array map

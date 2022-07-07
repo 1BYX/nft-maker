@@ -218,7 +218,7 @@ export default function Example() {
 
             {/* Secondary column (hidden on smaller screens) */}
             <aside className='hidden lg:block lg:flex-shrink-0 lg:order-first'>
-              <div className='relative flex flex-col h-full p-8 overflow-y-auto border-r w-96 bg-accent1 border-accent2'>
+              <div className='relative flex flex-col h-full overflow-y-auto border-r w-96 bg-accent1 border-accent2'>
                 <ConfigurationBar />
               </div>
             </aside>
