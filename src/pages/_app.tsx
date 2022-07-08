@@ -5,15 +5,23 @@ import type { AppType } from 'next/dist/shared/lib/utils'
 import superjson from 'superjson'
 import { SessionProvider } from 'next-auth/react'
 import '../styles/globals.css'
+import useDownloader from 'react-use-downloader'
+import React from 'react'
+
+const downloaderContext = React.createContext({})
 
 const MyApp: AppType = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  const downloaderUtils = useDownloader()
+
   return (
     <div className='h-screen'>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <downloaderContext.Provider value={downloaderUtils}>
+          <Component {...pageProps} />
+        </downloaderContext.Provider>
       </SessionProvider>
     </div>
   )

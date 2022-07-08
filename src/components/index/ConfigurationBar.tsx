@@ -53,7 +53,7 @@ const ConfigurationBar = () => {
     win?.document.write(
       '<iframe src="' +
         url +
-        '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
+        '" frameborder="0" style="border:0; display:grid; justify-items:center; align-items:center; background-color:black; top:50%; left:0%; bottom:0px; margin-left:0%; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
     )
   }
 
