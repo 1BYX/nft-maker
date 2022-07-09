@@ -1,27 +1,19 @@
-// src/pages/_app.tsx
 import { withTRPC } from '@trpc/next'
 import type { AppRouter } from '../server/router'
 import type { AppType } from 'next/dist/shared/lib/utils'
 import superjson from 'superjson'
 import { SessionProvider } from 'next-auth/react'
 import '../styles/globals.css'
-import useDownloader from 'react-use-downloader'
-import React from 'react'
-
-const downloaderContext = React.createContext({})
+import React, { useState } from 'react'
 
 const MyApp: AppType = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const downloaderUtils = useDownloader()
-
   return (
     <div className='h-screen'>
       <SessionProvider session={session}>
-        <downloaderContext.Provider value={downloaderUtils}>
-          <Component {...pageProps} />
-        </downloaderContext.Provider>
+        <Component {...pageProps} />
       </SessionProvider>
     </div>
   )

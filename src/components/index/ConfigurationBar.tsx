@@ -1,6 +1,6 @@
 import { PlusIcon } from '@heroicons/react/outline'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   IinitializeLayerData,
   IinitialLayer,
@@ -9,8 +9,27 @@ import {
 import AddLayerSlideover from './AddLayerSlideover'
 import NetworkDropdown from './NetworkDropdown'
 
-const ConfigurationBar = () => {
-  const [network, setNetwork] = useState('eth')
+interface IConfigurationBar {
+  setNetwork: (param: string) => void
+  setCollectionName: (param: string) => void
+  setDescription: (param: string) => void
+  setAmount: (param: number) => void
+  setBaseUri: (param: string) => void
+  setWidth: (param: number) => void
+  setHeight: (param: number) => void
+  setDnaTorrance: (param: number) => void
+
+  network: string
+  collectionName: string
+  description: string
+  amount: number
+  baseUri: string
+  width: number
+  height: number
+  dnaTorrance: number
+}
+
+const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
   const [slideoverOpen, setSlideoverOpen] = useState(false)
 
   const [layerData, setLayerData] = useState<IlayerData>([])
@@ -34,7 +53,7 @@ const ConfigurationBar = () => {
   }
 
   const chooseNetwork = (_network: string) => {
-    setNetwork(_network)
+    props.setNetwork(_network)
   }
 
   const toggleLayerOpen = (_layerName: string) => {
@@ -136,7 +155,7 @@ const ConfigurationBar = () => {
         <h1 className='text-3xl text-white '>configuration</h1>
         <div className='grid grid-cols-2 py-6 text-center text-white'>
           <div className='grid items-center w-max justify-self-end'>
-            {network}
+            {props.network}
           </div>
           <div className='w-max justify-self-end'>
             <NetworkDropdown chooseNetwork={chooseNetwork} />
@@ -150,11 +169,13 @@ const ConfigurationBar = () => {
           </label>
           <div className='w-5/6 mt-1'>
             <input
-              type='email'
-              name='email'
-              id='email'
+              type='text'
+              name='collectionName'
+              id='collectionName'
               className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
               placeholder='joyful giraffe golfing club'
+              onChange={(e) => props.setCollectionName(e.target.value)}
+              value={props.collectionName}
             />
           </div>
         </div>
@@ -166,11 +187,13 @@ const ConfigurationBar = () => {
           </label>
           <div className='w-5/6 mt-1'>
             <input
-              type='email'
-              name='email'
-              id='email'
+              type='text'
+              name='description'
+              id='description'
               className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
               placeholder='soon-to-be #1 nft collection'
+              onChange={(e) => props.setDescription(e.target.value)}
+              value={props.description}
             />
           </div>
         </div>
@@ -182,11 +205,13 @@ const ConfigurationBar = () => {
           </label>
           <div className='w-5/6 mt-1'>
             <input
-              type='email'
-              name='email'
-              id='email'
+              type='text'
+              name='amount'
+              id='amount'
               className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
               placeholder='3333'
+              onChange={(e) => props.setAmount(Number(e.target.value))}
+              value={props.amount}
             />
           </div>
         </div>
@@ -198,11 +223,13 @@ const ConfigurationBar = () => {
           </label>
           <div className='w-5/6 mt-1'>
             <input
-              type='email'
-              name='email'
-              id='email'
+              type='text'
+              name='baseUri'
+              id='baseUri'
               className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
               placeholder='ipfs://newuritoreplace'
+              onChange={(e) => props.setBaseUri(e.target.value)}
+              value={props.baseUri}
             />
           </div>
         </div>
@@ -218,11 +245,13 @@ const ConfigurationBar = () => {
               </label>
               <div className='mt-1'>
                 <input
-                  type='email'
-                  name='widthFormat'
-                  id='widthFormat'
+                  type='text'
+                  name='width'
+                  id='width'
                   className='block w-full shadow-sm bg-background text-accent7 border-accent6 sm:text-sm'
                   placeholder='512'
+                  onChange={(e) => props.setWidth(Number(e.target.value))}
+                  value={props.width}
                 />
               </div>
             </div>
@@ -235,10 +264,12 @@ const ConfigurationBar = () => {
               <div className='mt-1'>
                 <input
                   type='text'
-                  name='heightFormat'
-                  id='heightFormat'
+                  name='height'
+                  id='height'
                   className='block w-full shadow-sm bg-background text-accent7 border-accent6 sm:text-sm'
                   placeholder='512'
+                  onChange={(e) => props.setHeight(Number(e.target.value))}
+                  value={props.height}
                 />
               </div>
             </div>
@@ -258,6 +289,8 @@ const ConfigurationBar = () => {
                 id='email'
                 className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
                 placeholder='10000'
+                onChange={(e) => props.setDnaTorrance(Number(e.target.value))}
+                value={props.dnaTorrance}
               />
             </div>
           </div>

@@ -16,6 +16,11 @@
     "incremental": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/components/filetransfer/ZipTest.js"
+  ],
   "exclude": ["node_modules"]
 }

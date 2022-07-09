@@ -14,6 +14,7 @@ import NetworkDropdown from '../components/index/NetworkDropdown'
 import AddLayerSlideover from '../components/index/AddLayerSlideover'
 import ConfigurationBar from '../components/index/ConfigurationBar'
 import DisplayDataBar from '../components/index/DisplayDataBar'
+import { useEffect } from 'react'
 
 const user = {
   name: 'Emily Selman',
@@ -29,6 +30,40 @@ const navigation = [
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const [network, setNetwork] = useState('eth')
+  const [collectionName, setCollectionName] = useState('')
+  const [description, setDescription] = useState('')
+  const [amount, setAmount] = useState<number>(3333)
+  const [baseUri, setBaseUri] = useState('')
+  const [width, setWidth] = useState(512)
+  const [height, setHeight] = useState(512)
+  const [dnaTorrance, setDnaTorrance] = useState(10000)
+
+  const updateNetwork = (_network: string) => {
+    setNetwork(_network)
+  }
+  const updateCollectionName = (_collectionName: string) => {
+    setCollectionName(_collectionName)
+  }
+  const updateDescription = (_description: string) => {
+    setDescription(_description)
+  }
+  const updateAmount = (_amount: number) => {
+    setAmount(_amount)
+  }
+  const updateBaseUri = (_baseUri: string) => {
+    setBaseUri(_baseUri)
+  }
+  const updateWidth = (_width: number) => {
+    setWidth(_width)
+  }
+  const updateHeight = (_height: number) => {
+    setHeight(_height)
+  }
+  const updateDnaTorrance = (_dnaTorrance: number) => {
+    setDnaTorrance(_dnaTorrance)
+  }
 
   return (
     <>
@@ -212,14 +247,40 @@ export default function Example() {
             <section
               aria-labelledby='primary-heading'
               className='flex flex-col flex-1 h-full min-w-0 overflow-y-auto lg:order-last bg-accent1'>
-              <DisplayDataBar />
+              <DisplayDataBar
+                network={network}
+                collectionName={collectionName}
+                description={description}
+                amount={amount}
+                baseUri={baseUri}
+                width={width}
+                height={height}
+                dnaTorrance={dnaTorrance}
+              />
               {/* Your content */}
             </section>
 
             {/* Secondary column (hidden on smaller screens) */}
             <aside className='hidden lg:block lg:flex-shrink-0 lg:order-first'>
               <div className='relative flex flex-col h-full overflow-y-auto border-r w-96 bg-accent1 border-accent2'>
-                <ConfigurationBar />
+                <ConfigurationBar
+                  setNetwork={updateNetwork}
+                  setCollectionName={updateCollectionName}
+                  setDescription={updateDescription}
+                  setAmount={updateAmount}
+                  setBaseUri={updateBaseUri}
+                  setWidth={updateWidth}
+                  setHeight={updateHeight}
+                  setDnaTorrance={updateDnaTorrance}
+                  network={network}
+                  collectionName={collectionName}
+                  description={description}
+                  amount={amount}
+                  baseUri={baseUri}
+                  width={width}
+                  height={height}
+                  dnaTorrance={dnaTorrance}
+                />
               </div>
             </aside>
           </main>

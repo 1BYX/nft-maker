@@ -1,9 +1,81 @@
 import { useEffect, useState } from 'react'
 import ZipTest from '../filetransfer/ZipTest'
+import { trpc } from '../../utils/trpc'
 
-const DisplayDataBar = () => {
+type IDisplayDataBar = {
+  network: string
+  collectionName: string
+  description: string
+  amount: number
+  baseUri: string
+  width: number
+  height: number
+  dnaTorrance: number
+}
+
+const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
   const [progress, setProgress] = useState(0)
   const [showProgress, setShowPropgress] = useState(false)
+
+  //   const generate = () => {
+  //     const getLayers = () => {
+  //       const unformattedLayers = localStorage.getItem('layers')
+  //       if (unformattedLayers) {
+  //         const layers = JSON.parse(unformattedLayers)
+  //         console.log(layers)
+  //         console.log(config)
+  //         return layers
+  //       }
+  //     }
+
+  //     const layers = getLayers()
+
+  //     const response = trpc.useQuery([
+  //       'generate.generate-nfts',
+  //       {
+  //         layers: layers,
+  //         config: {
+  //           format: {
+  //             width: config.width,
+  //             height: config.height,
+  //           },
+  //           baseUri: config.baseUri,
+  //           description: config.description,
+  //           uniqueDnaTorrance: config.dnaTorrance,
+  //           namePrefix: config.collectionName,
+  //           network: config.network,
+  //           layerConfigurations: {
+  //             growEditionSizeTo: config.amount,
+  //             layersOrder: [
+  //               {
+  //                 name: 'Background',
+  //               },
+  //               {
+  //                 name: 'Eyeball',
+  //               },
+  //               {
+  //                 name: 'Eye color',
+  //               },
+  //               {
+  //                 name: 'Iris',
+  //               },
+  //               {
+  //                 name: 'Shine',
+  //               },
+  //               {
+  //                 name: 'Bottom lid',
+  //               },
+  //               {
+  //                 name: 'Top lid',
+  //               },
+  //             ],
+  //           },
+  //         },
+  //       },
+  //     ])
+
+  //     console.log(response)
+  //   }
 
   return (
     <div className='w-full h-full'>
@@ -11,9 +83,7 @@ const DisplayDataBar = () => {
         {showProgress ? (
           <div className='grid w-full grid-cols-[max-content_max-content] items-center gap-4 text-white justify-self-start'>
             <div className='w-32 h-2.5 bg-accent2'>
-              <div
-                className='bg-highlightYellow h-2.5'
-                style={{ width: `${progress}%` }}></div>
+              <div className='bg-highlightYellow h-2.5' style={{ width: `${progress}%` }}></div>
             </div>
             <div>{progress}%</div>
           </div>
@@ -35,6 +105,10 @@ const DisplayDataBar = () => {
       </div>
       <div className='w-full'>
         <ZipTest />
+        <br></br>
+        {/* <button className='bg-highlightMagenta' onClick={generate}>
+          generate
+        </button> */}
       </div>
     </div>
   )

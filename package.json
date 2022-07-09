@@ -29,7 +29,6 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-query": "^3.39.1",
-    "react-use-downloader": "^1.1.7",
     "sha1": "^1.1.1",
     "superjson": "^1.9.1",
     "zod": "^3.17.3"
