@@ -4,6 +4,11 @@ const nextConfig = {
   images: {
     domains: ['tailwindui.com', 'images.unsplash.com'],
   },
+  api: {
+    bodyParser: {
+      sizeLimit: '4mb',
+    },
+  },
 }
 
 module.exports = nextConfig

@@ -1,7 +1,7 @@
 import { createRouter } from './context'
 import { z } from 'zod'
 
-export const nftGenerationRouter = createRouter().query('generate-nfts', {
+export const nftGenerationRouter = createRouter().mutation('generate-nfts', {
   input: z.object({
     layers: z
       .array(

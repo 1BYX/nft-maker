@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import ZipTest from '../filetransfer/ZipTest'
 import { trpc } from '../../utils/trpc'
+import GENERATE from '../../server/engine/main'
 
 type IDisplayDataBar = {
   network: string
@@ -17,65 +18,64 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
   const [progress, setProgress] = useState(0)
   const [showProgress, setShowPropgress] = useState(false)
 
-  //   const generate = () => {
-  //     const getLayers = () => {
-  //       const unformattedLayers = localStorage.getItem('layers')
-  //       if (unformattedLayers) {
-  //         const layers = JSON.parse(unformattedLayers)
-  //         console.log(layers)
-  //         console.log(config)
-  //         return layers
-  //       }
-  //     }
+  const mutation = trpc.useMutation(['generate.generate-nfts'])
 
-  //     const layers = getLayers()
+  let generatedArrays: any
 
-  //     const response = trpc.useQuery([
-  //       'generate.generate-nfts',
-  //       {
-  //         layers: layers,
-  //         config: {
-  //           format: {
-  //             width: config.width,
-  //             height: config.height,
-  //           },
-  //           baseUri: config.baseUri,
-  //           description: config.description,
-  //           uniqueDnaTorrance: config.dnaTorrance,
-  //           namePrefix: config.collectionName,
-  //           network: config.network,
-  //           layerConfigurations: {
-  //             growEditionSizeTo: config.amount,
-  //             layersOrder: [
-  //               {
-  //                 name: 'Background',
-  //               },
-  //               {
-  //                 name: 'Eyeball',
-  //               },
-  //               {
-  //                 name: 'Eye color',
-  //               },
-  //               {
-  //                 name: 'Iris',
-  //               },
-  //               {
-  //                 name: 'Shine',
-  //               },
-  //               {
-  //                 name: 'Bottom lid',
-  //               },
-  //               {
-  //                 name: 'Top lid',
-  //               },
-  //             ],
-  //           },
-  //         },
-  //       },
-  //     ])
+  const generate = async () => {
+    console.log('generate is run')
+    const getLayers = () => {
+      console.log('getLayers is run')
+      const unformattedLayers = localStorage.getItem('layers')
+      if (unformattedLayers) {
+        const layers = JSON.parse(unformattedLayers)
+        console.log(layers)
+        console.log(config)
+        return layers
+      }
+    }
 
-  //     console.log(response)
-  //   }
+    const layers = getLayers()
+
+    generatedArrays = await GENERATE(layers, {
+      format: {
+        width: config.width,
+        height: config.height,
+      },
+      baseUri: config.baseUri,
+      description: config.description,
+      uniqueDnaTorrance: config.dnaTorrance,
+      namePrefix: config.collectionName,
+      network: config.network,
+      layerConfigurations: {
+        growEditionSizeTo: config.amount,
+        layersOrder: [
+          {
+            name: 'Background',
+          },
+          {
+            name: 'Eyeball',
+          },
+          {
+            name: 'Eye color',
+          },
+          {
+            name: 'Iris',
+          },
+          {
+            name: 'Shine',
+          },
+          {
+            name: 'Bottom lid',
+          },
+          {
+            name: 'Top lid',
+          },
+        ],
+      },
+    })
+    console.log('gengeratedArrays -> ', generatedArrays)
+  }
 
   return (
     <div className='w-full h-full'>
@@ -106,9 +106,15 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
       <div className='w-full'>
         <ZipTest />
         <br></br>
-        {/* <button className='bg-highlightMagenta' onClick={generate}>
+        <button className='bg-highlightMagenta' onClick={generate}>
           generate
-        </button> */}
+        </button>
+        <br></br>
+        {mutation.isLoading ? (
+          <p className='text-white'>loading</p>
+        ) : (
+          <p className='text-white'>{JSON.stringify(mutation.data)}</p>
+        )}
       </div>
     </div>
   )

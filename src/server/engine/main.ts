@@ -1,7 +1,6 @@
 import { useState } from 'react'
-const basePath = process.cwd()
-const sha1 = require(`${basePath}/node_modules/sha1`)
-const { createCanvas, loadImage } = require(`${basePath}/node_modules/canvas`)
+let sha1 = require('sha1')
+const { createCanvas, loadImage } = require('canvas')
 
 interface Iconfig {
   format: {
@@ -69,10 +68,7 @@ interface IlayerToDna {
   }
 }
 
-const GENERATE = async (
-  __layers: Array<IincomingLayerObj>,
-  config: Iconfig
-) => {
+const GENERATE = async (__layers: Array<IincomingLayerObj>, config: Iconfig) => {
   const {
     format,
     baseUri,
@@ -84,21 +80,17 @@ const GENERATE = async (
     solanaMetadata,
   } = config
 
-  const [imageArray, setImageArray] = useState<
-    Array<{
-      id: string
-      generatedImage: string
-    }>
-  >([])
+  let imageArray: Array<{
+    id: string
+    generatedImage: string
+  }> = []
 
-  const [jsonArray, setJsonArray] = useState<
-    Array<{
-      id: string
-      generatedJson: string
-    }>
-  >([])
+  let jsonArray: Array<{
+    id: string
+    generatedJson: string
+  }> = []
 
-  const [jsonSingleFile, setJsonSingleFile] = useState<string>()
+  let jsonSingleFile: string = ''
 
   const canvas = createCanvas(format.width, format.height)
   const ctx = canvas.getContext('2d')
@@ -112,9 +104,7 @@ const GENERATE = async (
   const getRarityWeight = (_str: string) => {
     console.log('getRarityWeight is run \n')
     let nameWithoutExtension = _str.slice(0, -4)
-    var nameWithoutWeight = Number(
-      nameWithoutExtension.split(rarityDelimiter).pop()
-    )
+    var nameWithoutWeight = Number(nameWithoutExtension.split(rarityDelimiter).pop())
     if (isNaN(nameWithoutWeight)) {
       nameWithoutWeight = 1
     }
@@ -141,9 +131,7 @@ const GENERATE = async (
       .filter((attr: any) => !/(^|\/)\.[^\/\.]/g.test(attr.name))
       .map((i: any, index: number) => {
         if (i.name.includes('-')) {
-          throw new Error(
-            `layer name can not contain dashes, please fix: ${i.name}`
-          )
+          throw new Error(`layer name can not contain dashes, please fix: ${i.name}`)
         }
         return {
           id: index,
@@ -173,13 +161,14 @@ const GENERATE = async (
 
   const saveImage = (_editionCount: number) => {
     console.log('saveImage is run is run \n')
-    setImageArray((prevArray) => [
-      ...prevArray,
+    imageArray = [
+      ...imageArray,
       {
         id: `${_editionCount}.png`,
         generatedImage: canvas.toDataURL('image/png'),
       },
-    ])
+    ]
+    console.log('image array -> ', imageArray)
   }
 
   const addMetadata = (_dna: string, _edition: number) => {
@@ -232,11 +221,7 @@ const GENERATE = async (
     let failedCount = 0
     let abstractedIndexes: Array<number> = []
     if (layerConfigurations.growEditionSizeTo) {
-      for (
-        let i = network == 'sol' ? 0 : 1;
-        i <= layerConfigurations.growEditionSizeTo;
-        i++
-      ) {
+      for (let i = network == 'sol' ? 0 : 1; i <= layerConfigurations.growEditionSizeTo; i++) {
         abstractedIndexes.push(i)
       }
     }
@@ -256,22 +241,14 @@ const GENERATE = async (
         await Promise.all(loadedElements).then((renderObjectArray) => {
           ctx.clearRect(0, 0, format.width, format.height)
           renderObjectArray.forEach((renderObject, index) => {
-            drawElement(
-              renderObject,
-              index,
-              layerConfigurations.layersOrder.length
-            )
+            drawElement(renderObject, index, layerConfigurations.layersOrder.length)
           })
           if (abstractedIndexes[0]) {
             saveImage(abstractedIndexes[0])
             addMetadata(newDna, abstractedIndexes[0])
             saveMetaDataSingleFile(abstractedIndexes[0])
           }
-          console.log(
-            `Created edition: ${abstractedIndexes[0]}, with DNA: ${sha1(
-              newDna
-            )}`
-          )
+          console.log(`Created edition: ${abstractedIndexes[0]}, with DNA: ${sha1(newDna)}`)
         })
         dnaList.add(filterDNAOptions(newDna))
         editionCount++
@@ -313,11 +290,7 @@ const GENERATE = async (
     }
   }
 
-  const drawElement = (
-    _renderObject: any,
-    _index: number,
-    _layersLen: number
-  ) => {
+  const drawElement = (_renderObject: any, _index: number, _layersLen: number) => {
     console.log('drawElement is run \n')
     ctx.globalAlpha = _renderObject.layer.opacity
     ctx.globalCompositeOperation = _renderObject.layer.blend
@@ -363,8 +336,7 @@ const GENERATE = async (
       }
       const options = querystring[1]?.split('&').reduce((r, setting): any => {
         const keyPairs = setting.split('=')
-        if (typeof keyPairs == 'string')
-          return { ...r, [keyPairs[0]]: keyPairs[1] }
+        if (typeof keyPairs == 'string') return { ...r, [keyPairs[0]]: keyPairs[1] }
       }, [])
 
       return false
@@ -421,19 +393,20 @@ const GENERATE = async (
 
   const writeMetaData = (_data: string) => {
     console.log('writeMetaData is run \n')
-    setJsonSingleFile(_data)
+    jsonSingleFile = _data
   }
 
   const saveMetaDataSingleFile = (_editionCount: number) => {
     console.log('saveMetaDataSingleFile is run \n')
     let metadata = metadataList.find((meta) => meta.edition == _editionCount)
-    setJsonArray((prevArray) => [
-      ...prevArray,
+    jsonArray = [
+      ...jsonArray,
       {
         id: `${_editionCount}.json`,
         generatedJson: JSON.stringify(metadata, null, 2),
       },
-    ])
+    ]
+    console.log('json array -> ', jsonArray)
   }
 
   startCreating()

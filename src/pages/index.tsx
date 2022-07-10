@@ -34,7 +34,7 @@ export default function Example() {
   const [network, setNetwork] = useState('eth')
   const [collectionName, setCollectionName] = useState('')
   const [description, setDescription] = useState('')
-  const [amount, setAmount] = useState<number>(3333)
+  const [amount, setAmount] = useState<number>(5)
   const [baseUri, setBaseUri] = useState('')
   const [width, setWidth] = useState(512)
   const [height, setHeight] = useState(512)
@@ -69,10 +69,7 @@ export default function Example() {
     <>
       <div className='flex h-full'>
         <Transition.Root show={mobileMenuOpen} as={Fragment}>
-          <Dialog
-            as='div'
-            className='relative z-40 lg:hidden'
-            onClose={setMobileMenuOpen}>
+          <Dialog as='div' className='relative z-40 lg:hidden' onClose={setMobileMenuOpen}>
             <Transition.Child
               as={Fragment}
               enter='transition-opacity ease-linear duration-300'
@@ -108,21 +105,14 @@ export default function Example() {
                         className='flex items-center justify-center w-10 h-10 ml-1'
                         onClick={() => setMobileMenuOpen(false)}>
                         <span className='sr-only'>Close sidebar</span>
-                        <XIcon
-                          className='w-6 h-6 text-white'
-                          aria-hidden='true'
-                        />
+                        <XIcon className='w-6 h-6 text-white' aria-hidden='true' />
                       </button>
                     </div>
                   </Transition.Child>
                   <div className='pt-5 pb-4'>
                     <Link href='/'>
                       <div className='flex items-center flex-shrink-0 px-4 cursor-pointer'>
-                        <img
-                          className='w-auto h-8'
-                          src='../../ape.png'
-                          alt='Workflow'
-                        />
+                        <img className='w-auto h-8' src='../../ape.png' alt='Workflow' />
                       </div>
                     </Link>
                     <nav aria-label='Sidebar' className='mt-5'>
@@ -178,16 +168,10 @@ export default function Example() {
               <div className='flex-1'>
                 <Link href='/'>
                   <div className='flex items-center justify-center py-4 cursor-pointer bg-accent1'>
-                    <img
-                      className='w-auto h-8'
-                      src='../../ape.png'
-                      alt='Workflow'
-                    />
+                    <img className='w-auto h-8' src='../../ape.png' alt='Workflow' />
                   </div>
                 </Link>
-                <nav
-                  aria-label='Sidebar'
-                  className='flex flex-col items-center py-6 space-y-3'>
+                <nav aria-label='Sidebar' className='flex flex-col items-center py-6 space-y-3'>
                   {navigation.map((item) => (
                     <Link href={item.href} key={item.name}>
                       <div className='flex items-center p-4 text-gray-300 rounded-lg cursor-pointer hover:bg-accent2'>
@@ -223,11 +207,7 @@ export default function Example() {
             <div className='flex items-center justify-between px-4 py-2 bg-background sm:px-6 lg:px-8'>
               <Link href='/'>
                 <div className='cursor-pointer'>
-                  <img
-                    className='w-auto h-8'
-                    src='../../ape.png'
-                    alt='Workflow'
-                  />
+                  <img className='w-auto h-8' src='../../ape.png' alt='Workflow' />
                 </div>
               </Link>
               <div>

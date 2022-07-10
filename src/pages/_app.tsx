@@ -5,11 +5,9 @@ import superjson from 'superjson'
 import { SessionProvider } from 'next-auth/react'
 import '../styles/globals.css'
 import React, { useState } from 'react'
+import { httpLink } from '@trpc/client/links/httpLink'
 
-const MyApp: AppType = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
     <div className='h-screen'>
       <SessionProvider session={session}>
@@ -40,6 +38,11 @@ export default withTRPC<AppRouter>({
     return {
       url,
       transformer: superjson,
+      links: [
+        httpLink({
+          url: '/api/trpc',
+        }),
+      ],
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
