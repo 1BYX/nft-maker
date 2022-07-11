@@ -40,7 +40,7 @@ const DownloadGenerated: React.FC<IoutputArrays> = ({ imageArray, jsonArray, jso
   return (
     <div className=''>
       <button
-        className='px-6 py-4 text-2xl border text-accent1 bg-accent7 border-accent7'
+        className='px-10 py-2 text-2xl border text-accent1 bg-accent7 border-accent7'
         onClick={downloadFile}>
         download
       </button>
