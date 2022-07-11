@@ -74,7 +74,9 @@ const GENERATE = async (
   config: Iconfig,
   updateGeneratedArrays: ({ imageArray, jsonArray, jsonSingleFile }: IoutputArrays) => void,
   updateIsFinishedGenerating: (fnished: boolean) => void,
-  updatePercentage: (percentage: number) => void
+  updatePercentage: (percentage: number) => void,
+  toggleShowProgress: (show: boolean) => void,
+  getCancelFlag: () => boolean
 ) => {
   const {
     format,
@@ -89,9 +91,20 @@ const GENERATE = async (
 
   let step: number
   let percentage: number = 0
+  let editionCount = 1
+
+  const cancelButton = document.getElementById('cancelNftGeneration')
+  cancelButton?.addEventListener('click', () => {
+    imageArray = []
+    jsonArray = []
+    jsonSingleFile = ''
+    console.log('YOU JUST CANCELLED IN EVENTLISTENER')
+    editionCount = config.layerConfigurations.growEditionSizeTo
+    return
+  })
 
   if (layerConfigurations.growEditionSizeTo >= 10) {
-    step = layerConfigurations.growEditionSizeTo / 10
+    step = Math.floor(layerConfigurations.growEditionSizeTo / 10)
   } else {
     step = 1
   }
@@ -112,7 +125,6 @@ const GENERATE = async (
   const rarityDelimiter = '#'
 
   const getRarityWeight = (_str: string) => {
-    console.log('getRarityWeight is run \n')
     let nameWithoutExtension = _str.slice(0, -4)
     var nameWithoutWeight = Number(nameWithoutExtension.split(rarityDelimiter).pop())
     if (isNaN(nameWithoutWeight)) {
@@ -122,21 +134,18 @@ const GENERATE = async (
   }
 
   const cleanDna = (_str: string) => {
-    console.log('cleanDna is run \n')
     const withoutOptions = removeQueryStrings(_str)
     var dna = Number(withoutOptions.split(':').shift())
     return dna
   }
 
   const cleanName = (_str: string) => {
-    console.log('cleanName is run \n')
     let nameWithoutExtension = _str.slice(0, -4)
     var nameWithoutWeight = nameWithoutExtension.split(rarityDelimiter).shift()
     return nameWithoutWeight
   }
 
   const getElements = (layerObj: IincomingLayerObj) => {
-    console.log('getElements is run \n')
     return layerObj.attributes
       .filter((attr: any) => !/(^|\/)\.[^\/\.]/g.test(attr.name))
       .map((i: any, index: number) => {
@@ -154,7 +163,6 @@ const GENERATE = async (
   }
 
   const layersSetup = (__layers: Array<IincomingLayerObj>) => {
-    console.log('layersSetup is run \n')
     let layers
     if (__layers[0] && __layers[0].layerName) {
       layers = __layers.map((layerObj, index) => ({
@@ -170,7 +178,6 @@ const GENERATE = async (
   }
 
   const saveImage = (_editionCount: number) => {
-    console.log('saveImage is run is run \n')
     imageArray = [
       ...imageArray,
       {
@@ -178,23 +185,16 @@ const GENERATE = async (
         generatedImage: canvas.toDataURL('image/png'),
       },
     ]
-    console.log('image array -> ', imageArray)
     if (imageArray.length % step == 0) {
-      console.log('made it to if in saveImage')
       updateGeneratedArrays({ imageArray, jsonArray, jsonSingleFile })
       percentage += 10
-      updatePercentage(percentage)
-      console.log(
-        'new generated arrays are: ',
-        { imageArray, jsonArray, jsonSingleFile },
-        'percentage is -> ',
-        percentage
-      )
+      if (percentage <= 100) {
+        updatePercentage(percentage)
+      }
     }
   }
 
   const addMetadata = (_dna: string, _edition: number) => {
-    console.log('addMetadata is run \n')
     let dateTime = Date.now()
     let tempMetadata = {
       name: `${namePrefix} #${_edition}`,
@@ -237,9 +237,7 @@ const GENERATE = async (
   }
 
   const startCreating = async () => {
-    console.log('startCreting is run \n')
     let layerConfigIndex = 0
-    let editionCount = 1
     let failedCount = 0
     let abstractedIndexes: Array<number> = []
     if (layerConfigurations.growEditionSizeTo) {
@@ -259,6 +257,18 @@ const GENERATE = async (
         results.forEach((layer) => {
           loadedElements.push(loadLayerImg(layer))
         })
+
+        const cancelFlag = getCancelFlag()
+
+        if (cancelFlag === true) {
+          editionCount = layerConfigurations.growEditionSizeTo
+          imageArray = []
+          jsonArray = []
+          jsonSingleFile = ''
+          console.log('YOU JUST CANCELLED IN LOOP')
+          metadataList = []
+          break
+        }
 
         await Promise.all(loadedElements).then((renderObjectArray) => {
           ctx.clearRect(0, 0, format.width, format.height)
@@ -282,7 +292,7 @@ const GENERATE = async (
           console.log(
             `You need more layers or elements to grow your edition to ${layerConfigurations.growEditionSizeTo} artworks!`
           )
-          process.exit()
+          return
         }
       }
     }
@@ -293,7 +303,6 @@ const GENERATE = async (
   }
 
   const addAttributes = (_element: any) => {
-    console.log('addAttributes is run \n')
     let selectedElement = _element.layer.selectedElement
     attributesList.push({
       trait_type: _element.layer.name,
@@ -303,7 +312,6 @@ const GENERATE = async (
 
   //NEEDS CHANGING
   const loadLayerImg = async (_layer: IlayerToDna) => {
-    console.log('loadLayerImg is run \n')
     try {
       return new Promise(async (resolve) => {
         const image = await loadImage(_layer.selectedElement.image)
@@ -315,7 +323,6 @@ const GENERATE = async (
   }
 
   const drawElement = (_renderObject: any, _index: number, _layersLen: number) => {
-    console.log('drawElement is run \n')
     ctx.globalAlpha = _renderObject.layer.opacity
     ctx.globalCompositeOperation = _renderObject.layer.blend
     ctx.drawImage(_renderObject.loadedImage, 0, 0, format.width, format.height)
@@ -324,7 +331,6 @@ const GENERATE = async (
   }
 
   const constructLayerToDna = (_dna: string = '', _layers: Ilayers) => {
-    console.log('constructLayerToDna is run \n')
     let mappedDnaToLayers = _layers.map((layer, index) => {
       let selectedElement
       selectedElement = layer.elements.find(
@@ -350,7 +356,6 @@ const GENERATE = async (
    * @returns new DNA string with any items that should be filtered, removed.
    */
   const filterDNAOptions = (_dna: string) => {
-    console.log('filterDNAOptions is run \n')
     const dnaItems = _dna.split(DNA_DELIMITER)
     const filteredDNA = dnaItems.filter((element) => {
       const query = /(\?.*$)/
@@ -378,19 +383,16 @@ const GENERATE = async (
    * @returns Cleaned DNA string without querystring parameters.
    */
   const removeQueryStrings = (_dna: string) => {
-    console.log('removeQueryStrings is run \n')
     const query = /(\?.*$)/
     return _dna.replace(query, '')
   }
 
   const isDnaUnique = (_DnaList = new Set(), _dna = '') => {
-    console.log('isDnaUnique is run \n')
     const _filteredDNA = filterDNAOptions(_dna)
     return !_DnaList.has(_filteredDNA)
   }
 
   const createDna = (_layers: Ilayers) => {
-    console.log('createDna is run \n')
     let randNum: Array<string> = []
     _layers.forEach((layer) => {
       var totalWeight = 0
@@ -416,15 +418,23 @@ const GENERATE = async (
   }
 
   const writeMetaData = (_data: string) => {
-    console.log('writeMetaData is run \n')
     jsonSingleFile = _data
     updateGeneratedArrays({ imageArray, jsonArray, jsonSingleFile })
-    console.log('final generated arrays -> ', { imageArray, jsonArray, jsonSingleFile })
     updateIsFinishedGenerating(true)
+    setTimeout(() => {
+      toggleShowProgress(false)
+    }, 4000)
+    cancelButton?.removeEventListener('click', () => {
+      imageArray = []
+      jsonArray = []
+      jsonSingleFile = ''
+      console.log('YOU JUST CANCELLED IN EVENTLISTENER')
+      editionCount = config.layerConfigurations.growEditionSizeTo
+      return
+    })
   }
 
   const saveMetaDataSingleFile = (_editionCount: number) => {
-    console.log('saveMetaDataSingleFile is run \n')
     let metadata = metadataList.find((meta) => meta.edition == _editionCount)
     jsonArray = [
       ...jsonArray,
@@ -433,7 +443,6 @@ const GENERATE = async (
         generatedJson: JSON.stringify(metadata, null, 2),
       },
     ]
-    console.log('json array -> ', jsonArray)
   }
 
   startCreating()

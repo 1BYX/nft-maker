@@ -3,12 +3,8 @@ import { createRouter } from './context'
 import superjson from 'superjson'
 
 import { exampleRouter } from './example'
-import { nftGenerationRouter } from './nft-generation'
 
-export const appRouter = createRouter()
-  .transformer(superjson)
-  .merge('example.', exampleRouter)
-  .merge('generate.', nftGenerationRouter)
+export const appRouter = createRouter().transformer(superjson).merge('example.', exampleRouter)
 
 // export type definition of API
 export type AppRouter = typeof appRouter
