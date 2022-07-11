@@ -15,9 +15,6 @@ interface Iconfig {
   network: string
   layerConfigurations: {
     growEditionSizeTo: number
-    layersOrder: Array<{
-      name: string
-    }>
   }
   solanaMetadata?: {
     symbol: string
@@ -273,7 +270,7 @@ const GENERATE = async (
         await Promise.all(loadedElements).then((renderObjectArray) => {
           ctx.clearRect(0, 0, format.width, format.height)
           renderObjectArray.forEach((renderObject, index) => {
-            drawElement(renderObject, index, layerConfigurations.layersOrder.length)
+            drawElement(renderObject, index, __layers.length)
           })
           if (abstractedIndexes[0]) {
             saveImage(abstractedIndexes[0])
@@ -423,7 +420,7 @@ const GENERATE = async (
     updateIsFinishedGenerating(true)
     setTimeout(() => {
       toggleShowProgress(false)
-    }, 4000)
+    }, 3000)
     cancelButton?.removeEventListener('click', () => {
       imageArray = []
       jsonArray = []

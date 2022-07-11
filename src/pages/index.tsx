@@ -34,7 +34,7 @@ export default function Example() {
   const [network, setNetwork] = useState('eth')
   const [collectionName, setCollectionName] = useState('')
   const [description, setDescription] = useState('')
-  const [amount, setAmount] = useState<number>(5)
+  const [amount, setAmount] = useState<number>(10)
   const [baseUri, setBaseUri] = useState('')
   const [width, setWidth] = useState(512)
   const [height, setHeight] = useState(512)

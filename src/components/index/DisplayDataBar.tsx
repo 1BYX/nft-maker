@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 import DownloadGenerated from '../filetransfer/DownloadGenerated'
-import { trpc } from '../../utils/trpc'
 import GENERATE from '../../server/engine/main'
 import { IoutputArrays, TimageArray } from '../../interfaces/outputArrays'
-import { createFalse } from 'typescript'
-import { Z_FULL_FLUSH } from 'zlib'
+import { sampleLayers } from '../filetransfer/temp-storage/sampleLayers'
 
 type IDisplayDataBar = {
   network: string
@@ -139,29 +137,34 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
         network: config.network,
         layerConfigurations: {
           growEditionSizeTo: config.amount,
-          layersOrder: [
-            {
-              name: 'Background',
-            },
-            {
-              name: 'Eyeball',
-            },
-            {
-              name: 'Eye color',
-            },
-            {
-              name: 'Iris',
-            },
-            {
-              name: 'Shine',
-            },
-            {
-              name: 'Bottom lid',
-            },
-            {
-              name: 'Top lid',
-            },
-          ],
+        },
+      },
+      updateGeneratedArrays,
+      updateIsFinishedGenerating,
+      updatePercentage,
+      toggleShowProgress,
+      getCancelFlag
+    )
+  }
+
+  const generateSample = () => {
+    setIsFinishedGenerating(false)
+    setIsCancelled(false)
+    setShowProgress(true)
+    GENERATE(
+      sampleLayers,
+      {
+        format: {
+          width: config.width,
+          height: config.height,
+        },
+        baseUri: config.baseUri,
+        description: config.description,
+        uniqueDnaTorrance: config.dnaTorrance,
+        namePrefix: config.collectionName,
+        network: config.network,
+        layerConfigurations: {
+          growEditionSizeTo: config.amount,
         },
       },
       updateGeneratedArrays,
@@ -178,7 +181,7 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
 
   return (
     <div className='w-full h-full'>
-      <div className='grid w-full py-10 px-8 border-b border-accent2 grid-cols-[1fr_max-content_max-content] items-center justify-end'>
+      <div className='grid w-full p-10 border-b border-accent2 grid-cols-[1fr_max-content_max-content] items-center justify-end'>
         {showProgress ? (
           <div className='grid w-full grid-cols-[max-content_max-content] items-center gap-4 text-white justify-self-start'>
             <div className='w-32 h-2.5 bg-background'>
@@ -186,7 +189,15 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
             </div>
             <div>{progress}%</div>
           </div>
-        ) : null}
+        ) : (
+          <div className='w-full'>
+            <button
+              onClick={generateSample}
+              className='px-2 py-1 border bg-background hover:bg-accent2 justify-self-start w-max border-accent7 text-accent7'>
+              run sample
+            </button>
+          </div>
+        )}
         {!isFinishedGenerating ? (
           <div className='pr-8 w-max justify-self-end'>
             <button
@@ -203,10 +214,8 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
             onClick={generate}
             disabled={!isFinishedGenerating}
             className={`${
-              !isFinishedGenerating
-                ? 'bg-accent2'
-                : 'bg-highlightYellow hover:bg-highlightYellowPressed'
-            } inline-flex items-center px-6 py-4 text-xl italic font-bold shadow-sm text-accent1`}>
+              showProgress ? 'bg-accent2' : 'bg-highlightYellow hover:bg-highlightYellowPressed'
+            } inline-flex items-center px-6 py-4 text-2xl shadow-sm text-accent1`}>
             generate
           </button>
         </div>
