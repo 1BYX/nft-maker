@@ -1,3 +1,4 @@
+import { IoutputArrays, TimageArray, TjsonArray } from './../../interfaces/outputArrays'
 import { useState } from 'react'
 let sha1 = require('sha1')
 const { createCanvas, loadImage } = require('canvas')
@@ -68,7 +69,13 @@ interface IlayerToDna {
   }
 }
 
-const GENERATE = async (__layers: Array<IincomingLayerObj>, config: Iconfig) => {
+const GENERATE = async (
+  __layers: Array<IincomingLayerObj>,
+  config: Iconfig,
+  updateGeneratedArrays: ({ imageArray, jsonArray, jsonSingleFile }: IoutputArrays) => void,
+  updateIsFinishedGenerating: (fnished: boolean) => void,
+  updatePercentage: (percentage: number) => void
+) => {
   const {
     format,
     baseUri,
@@ -80,15 +87,18 @@ const GENERATE = async (__layers: Array<IincomingLayerObj>, config: Iconfig) => 
     solanaMetadata,
   } = config
 
-  let imageArray: Array<{
-    id: string
-    generatedImage: string
-  }> = []
+  let step: number
+  let percentage: number = 0
 
-  let jsonArray: Array<{
-    id: string
-    generatedJson: string
-  }> = []
+  if (layerConfigurations.growEditionSizeTo >= 10) {
+    step = layerConfigurations.growEditionSizeTo / 10
+  } else {
+    step = 1
+  }
+
+  let imageArray: TimageArray = []
+
+  let jsonArray: TjsonArray = []
 
   let jsonSingleFile: string = ''
 
@@ -169,6 +179,18 @@ const GENERATE = async (__layers: Array<IincomingLayerObj>, config: Iconfig) => 
       },
     ]
     console.log('image array -> ', imageArray)
+    if (imageArray.length % step == 0) {
+      console.log('made it to if in saveImage')
+      updateGeneratedArrays({ imageArray, jsonArray, jsonSingleFile })
+      percentage += 10
+      updatePercentage(percentage)
+      console.log(
+        'new generated arrays are: ',
+        { imageArray, jsonArray, jsonSingleFile },
+        'percentage is -> ',
+        percentage
+      )
+    }
   }
 
   const addMetadata = (_dna: string, _edition: number) => {
@@ -266,6 +288,8 @@ const GENERATE = async (__layers: Array<IincomingLayerObj>, config: Iconfig) => 
     }
     layerConfigIndex++
     writeMetaData(JSON.stringify(metadataList, null, 2))
+
+    //could do something here, as it's the finish point
   }
 
   const addAttributes = (_element: any) => {
@@ -394,6 +418,9 @@ const GENERATE = async (__layers: Array<IincomingLayerObj>, config: Iconfig) => 
   const writeMetaData = (_data: string) => {
     console.log('writeMetaData is run \n')
     jsonSingleFile = _data
+    updateGeneratedArrays({ imageArray, jsonArray, jsonSingleFile })
+    console.log('final generated arrays -> ', { imageArray, jsonArray, jsonSingleFile })
+    updateIsFinishedGenerating(true)
   }
 
   const saveMetaDataSingleFile = (_editionCount: number) => {
@@ -410,11 +437,6 @@ const GENERATE = async (__layers: Array<IincomingLayerObj>, config: Iconfig) => 
   }
 
   startCreating()
-  return {
-    imageArray,
-    jsonArray,
-    jsonSingleFile,
-  }
 }
 
 export default GENERATE

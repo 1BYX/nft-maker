@@ -17,6 +17,7 @@ module.exports = {
         highlightMagenta: '#EB367F',
         highlightPurple: 'F81CE5',
         highlightYellow: '#FFF500',
+        highlightYellowPressed: '#9e9911',
         errorDark: '#E60000',
         errorDefault: 'red',
         warningLight: '#F7B955',

@@ -1,11 +1,7 @@
 import { PlusIcon } from '@heroicons/react/outline'
 import Link from 'next/link'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import {
-  IinitializeLayerData,
-  IinitialLayer,
-  IlayerData,
-} from '../../interfaces/Ilayers'
+import { IinitializeLayerData, IinitialLayer, IlayerData } from '../../interfaces/Ilayers'
 import AddLayerSlideover from './AddLayerSlideover'
 import NetworkDropdown from './NetworkDropdown'
 
@@ -97,11 +93,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                         viewBox='0 0 24 24'
                         stroke='currentColor'
                         strokeWidth={2}>
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M19 9l-7 7-7-7'
-                        />
+                        <path strokeLinecap='round' strokeLinejoin='round' d='M19 9l-7 7-7-7' />
                       </svg>
                     ) : (
                       <svg
@@ -111,11 +103,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                         viewBox='0 0 24 24'
                         stroke='currentColor'
                         strokeWidth={2}>
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M9 5l7 7-7 7'
-                        />
+                        <path strokeLinecap='round' strokeLinejoin='round' d='M9 5l7 7-7 7' />
                       </svg>
                     )}
                   </div>
@@ -128,9 +116,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                   <div className='w-5/6 text-right justify-self-end text-accent7'>
                     {layerData[index]?.attributes.map((n) => (
                       <div className='' key={n.image}>
-                        <u
-                          className='cursor-pointer'
-                          onClick={() => openBase64(n.image)}>
+                        <u className='cursor-pointer' onClick={() => openBase64(n.image)}>
                           {n.name}
                         </u>
                       </div>
@@ -144,7 +130,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
             <button
               type='button'
               onClick={() => toggleSlideover(!slideoverOpen)}
-              className='grid grid-cols-[max-content_max-content] items-center w-full px-4 py-2 font-medium text-black shadow-sm justify-end bg-accent7 hover:bg-accent6'>
+              className='grid grid-cols-[max-content_max-content] items-center w-full px-4 py-2 text-black shadow-sm justify-end bg-accent7 hover:bg-accent6'>
               <PlusIcon className='w-5 h-5 mr-3 -ml-1' aria-hidden='true' />
               add layer
             </button>
@@ -154,17 +140,13 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
       <div className='grid gap-6 px-8 py-6'>
         <h1 className='text-3xl text-white '>configuration</h1>
         <div className='grid grid-cols-2 py-6 text-center text-white'>
-          <div className='grid items-center w-max justify-self-end'>
-            {props.network}
-          </div>
+          <div className='grid items-center w-max justify-self-end'>{props.network}</div>
           <div className='w-max justify-self-end'>
             <NetworkDropdown chooseNetwork={chooseNetwork} />
           </div>
         </div>
         <div className='grid w-full justify-items-end'>
-          <label
-            htmlFor='email'
-            className='block text-sm font-medium text-accent7'>
+          <label htmlFor='email' className='block text-sm text-accent7'>
             collection name
           </label>
           <div className='w-5/6 mt-1'>
@@ -180,9 +162,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
           </div>
         </div>
         <div className='grid w-full justify-items-end'>
-          <label
-            htmlFor='email'
-            className='block text-sm font-medium text-accent7'>
+          <label htmlFor='email' className='block text-sm text-accent7'>
             brief description
           </label>
           <div className='w-5/6 mt-1'>
@@ -198,9 +178,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
           </div>
         </div>
         <div className='grid w-full justify-items-end'>
-          <label
-            htmlFor='email'
-            className='block text-sm font-medium text-accent7'>
+          <label htmlFor='email' className='block text-sm text-accent7'>
             amount of nfts
           </label>
           <div className='w-5/6 mt-1'>
@@ -216,9 +194,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
           </div>
         </div>
         <div className='grid w-full justify-items-end'>
-          <label
-            htmlFor='email'
-            className='block text-sm font-medium text-accent7'>
+          <label htmlFor='email' className='block text-sm text-accent7'>
             base uri
           </label>
           <div className='w-5/6 mt-1'>
@@ -238,9 +214,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
         <div className='grid justify-end justify-self-end justify-items-end'>
           <div className='grid w-5/6 grid-cols-2'>
             <div className='w-2/3'>
-              <label
-                htmlFor='email'
-                className='block text-sm font-medium text-right text-accent7'>
+              <label htmlFor='email' className='block text-sm text-right text-accent7'>
                 width (px)
               </label>
               <div className='mt-1'>
@@ -256,9 +230,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
               </div>
             </div>
             <div className='w-2/3 justify-self-end'>
-              <label
-                htmlFor='email'
-                className='block text-sm font-medium text-right text-accent7'>
+              <label htmlFor='email' className='block text-sm text-right text-accent7'>
                 height (px)
               </label>
               <div className='mt-1'>
@@ -277,9 +249,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
         </div>
         <div className='py-5'>
           <div className='grid w-full justify-items-end'>
-            <label
-              htmlFor='email'
-              className='block text-sm font-medium text-accent7'>
+            <label htmlFor='email' className='block text-sm text-accent7'>
               dna torrance
             </label>
             <div className='w-5/6 mt-1'>

@@ -119,7 +119,7 @@ export default function Example() {
                       <div className='px-2 space-y-1'>
                         {navigation.map((item) => (
                           <Link href={item.href} key={item.name}>
-                            <p className='flex items-center p-2 text-base font-medium text-gray-300 rounded-md cursor-pointer group hover:bg-accent2'>
+                            <p className='flex items-center p-2 text-base text-gray-300 rounded-md cursor-pointer group hover:bg-accent2'>
                               <item.icon
                                 className='w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-400'
                                 aria-hidden='true'
@@ -142,10 +142,10 @@ export default function Example() {
                           />
                         </div>
                         <div className='ml-3'>
-                          <p className='text-base font-medium text-gray-700 group-hover:text-gray-900'>
+                          <p className='text-base text-gray-700 group-hover:text-gray-900'>
                             {user.name}
                           </p>
-                          <p className='text-sm font-medium text-gray-500 group-hover:text-gray-700'>
+                          <p className='text-sm text-gray-500 group-hover:text-gray-700'>
                             Account Settings
                           </p>
                         </div>
