@@ -1,7 +1,7 @@
 import { IoutputArrays, TimageArray, TjsonArray } from './../../interfaces/outputArrays'
 import { useState } from 'react'
-let sha1 = require('sha1')
-const { createCanvas, loadImage } = require('canvas')
+import sha1 from 'sha1'
+import { createCanvas, loadImage } from 'canvas'
 
 interface Iconfig {
   format: {
