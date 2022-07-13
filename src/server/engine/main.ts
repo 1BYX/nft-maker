@@ -255,17 +255,7 @@ const GENERATE = async (
           loadedElements.push(loadLayerImg(layer))
         })
 
-        const cancelFlag = getCancelFlag()
-
-        if (cancelFlag === true) {
-          editionCount = layerConfigurations.growEditionSizeTo
-          imageArray = []
-          jsonArray = []
-          jsonSingleFile = ''
-          console.log('YOU JUST CANCELLED IN LOOP')
-          metadataList = []
-          break
-        }
+        console.log('startCreating iteration')
 
         await Promise.all(loadedElements).then((renderObjectArray) => {
           ctx.clearRect(0, 0, format.width, format.height)
@@ -295,8 +285,6 @@ const GENERATE = async (
     }
     layerConfigIndex++
     writeMetaData(JSON.stringify(metadataList, null, 2))
-
-    //could do something here, as it's the finish point
   }
 
   const addAttributes = (_element: any) => {
@@ -307,7 +295,6 @@ const GENERATE = async (
     })
   }
 
-  //NEEDS CHANGING
   const loadLayerImg = async (_layer: IlayerToDna) => {
     try {
       return new Promise(async (resolve) => {
@@ -416,6 +403,7 @@ const GENERATE = async (
 
   const writeMetaData = (_data: string) => {
     jsonSingleFile = _data
+    console.log('WRITE METADATA IS RUN')
     updateGeneratedArrays({ imageArray, jsonArray, jsonSingleFile })
     updateIsFinishedGenerating(true)
     setTimeout(() => {

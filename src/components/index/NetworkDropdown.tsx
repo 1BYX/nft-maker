@@ -15,7 +15,7 @@ const NetworkDropdown: React.FC<INetworkDropdown> = ({ chooseNetwork }) => {
   return (
     <Menu as='div' className='relative inline-block w-32 text-left'>
       <div>
-        <Menu.Button className='inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white border shadow-sm border-accent7 bg-background hover:bg-accent1'>
+        <Menu.Button className='inline-flex justify-center w-full px-4 py-2 text-sm font-medium border shadow-sm text-accent7 border-accent7 bg-background hover:bg-accent1'>
           network
           <ChevronDownIcon className='w-5 h-5 ml-2 -mr-1' aria-hidden='true' />
         </Menu.Button>
@@ -48,14 +48,9 @@ const NetworkDropdown: React.FC<INetworkDropdown> = ({ chooseNetwork }) => {
           <div className='py-1'>
             <Menu.Item>
               {({ active }) => (
-                <div
-                  className={classNames(
-                    active ? 'bg-accent1 text-white' : 'text-accent7',
-                    'group flex items-center px-4 py-2 text-sm cursor-pointer'
-                  )}
-                  onClick={() => chooseNetwork('sol')}>
+                <div className='flex items-center px-4 py-2 text-sm text-accent4 group'>
                   <img src='../../sol.png' className='w-5 h-5 mr-3' />
-                  sol
+                  sol - not yet supported
                 </div>
               )}
             </Menu.Item>

@@ -1,13 +1,11 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
 import _logger from 'next-auth/utils/logger'
-import {
-  IinitializeLayerData,
-  IinitialLayer,
-  IlayerData,
-} from '../../interfaces/Ilayers'
+import { IinitializeLayerData, IinitialLayer, IlayerData } from '../../interfaces/Ilayers'
+import { useDropzone } from 'react-dropzone'
+import { TrueLiteral } from 'typescript'
 
 interface IAddLayerSlideover {
   slideoverOpen: boolean
@@ -30,23 +28,27 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
     }>
   >([])
 
+  const [files, setFiles] = useState<any>(null)
+
   const nuller = (e: any) => {
     e.target.value = null
   }
 
-  const onFiles = (e: any) => {
+  const onDrop = (acceptedFiles: Array<any>) => {
     setTempLayerAttributes([])
+    let localLayerAttributes: Array<any> = []
 
-    for (let i = 0; i < e.target.files.length; i++) {
+    for (let i = 0; i < acceptedFiles.length; i++) {
       const reader = new FileReader()
 
       reader.addEventListener('load', () => {
         if (reader.result && typeof reader.result === 'string') {
+          console.log('reader result => ', reader.result)
           setTempLayerAttributes((prevArray) => [
             ...prevArray,
             {
               layer: layerName,
-              name: e.target.files[i].name,
+              name: acceptedFiles[i].name,
               image: reader.result as string,
             },
           ])
@@ -54,15 +56,17 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
         }
       })
 
-      reader.readAsDataURL(e.target.files[i])
+      reader.readAsDataURL(acceptedFiles[i])
+      setTempLayerAttributes(localLayerAttributes)
 
       reader.removeEventListener('load', () => {
         if (reader.result && typeof reader.result === 'string') {
+          console.log('reader result => ', reader.result)
           setTempLayerAttributes((prevArray) => [
             ...prevArray,
             {
               layer: layerName,
-              name: e.target.files[i].name,
+              name: acceptedFiles[i].name,
               image: reader.result as string,
             },
           ])
@@ -71,6 +75,8 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
       })
     }
   }
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop })
 
   const cancelSubmission = () => {
     toggleSlideover(false)
@@ -132,7 +138,11 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
       let newLayers = [
         {
           layerName: layerName,
-          attributes: tempLayerAttributes,
+          attributes: tempLayerAttributes.map((tl) => ({
+            layer: tl.layer,
+            name: tl.name,
+            image: tl.image,
+          })),
         },
       ]
       const stringifiedNewLayers = JSON.stringify(newLayers)
@@ -153,10 +163,7 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
 
   return (
     <Transition.Root show={slideoverOpen} as={Fragment}>
-      <Dialog
-        as='div'
-        className='relative z-10'
-        onClose={() => toggleSlideover(false)}>
+      <Dialog as='div' className='relative z-10' onClose={() => toggleSlideover(false)}>
         <div className='fixed inset-0' />
         <div className='fixed inset-0 overflow-hidden'>
           <div className='absolute inset-0 overflow-hidden'>
@@ -189,12 +196,10 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                           </div>
                         </div>
                       </div>
-                      <div className='relative flex-1 px-4 mt-6 sm:px-6'>
+                      <div className='relative flex-1 px-4 mt-6 overflow-scroll sm:px-6'>
                         {/* Replace with your content */}
                         <div className='grid w-full mb-8 justify-items-end'>
-                          <label
-                            htmlFor='email'
-                            className='block text-sm font-medium text-accent7'>
+                          <label htmlFor='email' className='block text-sm font-medium text-accent7'>
                             layer name
                           </label>
                           <div className='w-2/3 mt-1'>
@@ -209,43 +214,35 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                             />
                           </div>
                         </div>
-                        <label
-                          htmlFor='layer-dropzone'
+                        <div
+                          {...getRootProps()}
                           className='grid grid-rows-[max-content_max-content] content-center items-center border-2 border-dashed cursor-pointer hover:bg-accent1 justify-items-center h-1/3 border-accent2 text-accent2'
                           aria-hidden='true'>
                           <p className='mb-8'>drag & drop here</p>
                           <p>or click to upload</p>
-                          <input
-                            id='layer-dropzone'
-                            type='file'
-                            multiple
-                            className='hidden'
-                            onChange={(e) => onFiles(e)}
-                            onClick={(e) => nuller(e)}
-                          />
-                        </label>
-                        <div className='grid w-full py-6 justify-items-end text-accent7'>
+                          <input {...getInputProps()} onClick={(e) => nuller(e)} />
+                        </div>
+                        <div className='grid w-full gap-2 py-6 justify-items-end text-accent7'>
                           {tempLayerAttributes.map((a) => (
-                            <div key={a.name} className='w-max'>
+                            <div
+                              key={a.name}
+                              className='w-max grid grid-cols-[max-content_max-content] items-end gap-4'>
                               <u>{a.name}</u>
+                              <img src={a.image} className='w-12' alt='preview' />
                             </div>
                           ))}
                         </div>
                         <ul className='w-full mt-8 text-accent6'>
                           <li>- upload multiple files</li>
                           <br></br>
-                          <li>
-                            - layer will have the name of the uploaded folder
-                          </li>
+                          <li>- layer will have the name of the uploaded folder</li>
+                          <br></br>
+                          <li>- order of the layers will determine stacking order</li>
                           <br></br>
                           <li>
-                            - order of the layers will determine stacking order
-                          </li>
-                          <br></br>
-                          <li>
-                            - if you want to add rarity to your attributes, do
-                            so via <br></br> #{'<occurence percentage>'} after
-                            the name of the attribute, followed by .png
+                            - if you want to add rarity to your attributes, do so via <br></br> #
+                            {'<occurence percentage>'} after the name of the attribute, followed by
+                            .png
                           </li>
                           <br></br>
                           <li className='ml-8'>
@@ -254,14 +251,13 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                           </li>
                           <br></br>
                           <li>
-                            - note that percents don{"'"}t have to add up to
-                            100, there{"'"}s no maximum
+                            - note that percents don{"'"}t have to add up to 100, there{"'"}s no
+                            maximum
                           </li>
                           <br></br>
                           <li>
-                            - if you want to delete or add images to layers
-                            later, you can do so by navigating to that layer on
-                            the left
+                            - if you want to delete or add images to layers later, you can do so by
+                            navigating to that layer on the left
                           </li>
                         </ul>
                         {/* /End replace */}

@@ -25,7 +25,7 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
     jsonSingleFile: '',
   })
 
-  const [previewArray, setPreviewArray] = useState<Array<string>>([])
+  const [previewArray, setPreviewArray] = useState<Array<string | undefined>>([])
   const [isFinishedGenerating, setIsFinishedGenerating] = useState(true)
   const [isCancelled, setIsCancelled] = useState(false)
 
@@ -37,42 +37,10 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
     const determinePreviewArray = () => {
       setPreviewArray([])
       if (generatedArrays.imageArray.length === config.amount) {
-        let previews: Array<string> = []
-        if (config.amount < 9 && previewArray.length < config.amount) {
-          for (let i = 0; i < config.amount; i++) {
-            const previewElementId = Math.floor(Math.random() * config.amount)
-            const previewElement = generatedArrays.imageArray[previewElementId]?.generatedImage
-            if (previewElement) {
-              previews = [...previews, previewElement]
-              if (hasDuplicates(previews)) {
-                previews.pop()
-                i--
-              }
-            }
-          }
-        } else if (config.amount >= 9 && previewArray.length < 9) {
-          for (let i = 0; i < 9; i++) {
-            if (config.amount < 200) {
-              const previewElementId = Math.floor(Math.random() * config.amount)
-              const previewElement = generatedArrays.imageArray[previewElementId]?.generatedImage
-              if (previewElement) {
-                previews = [...previews, previewElement]
-                if (hasDuplicates(previews)) {
-                  previews.pop()
-                  i--
-                }
-              }
-            } else {
-              const previewElementId = Math.floor(Math.random() * 200)
-              const previewElement = generatedArrays.imageArray[previewElementId]?.generatedImage
-              if (previewElement) {
-                previews = [...previews, previewElement]
-                if (hasDuplicates(previews)) {
-                  previews.pop()
-                  i--
-                }
-              }
-            }
+        let previews: Array<string | undefined> = []
+        for (let i = 0; i < 9; i++) {
+          if (generatedArrays.imageArray[i]?.generatedImage) {
+            previews = [...previews, generatedArrays.imageArray[i]?.generatedImage]
           }
         }
         setPreviewArray(previews)

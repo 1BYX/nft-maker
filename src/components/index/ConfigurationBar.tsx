@@ -1,6 +1,9 @@
 import { PlusIcon } from '@heroicons/react/outline'
+import { GetServerSideProps } from 'next'
 import Link from 'next/link'
+import { listenerCount } from 'process'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { DragDropContext, Droppable, Draggable, resetServerContext } from 'react-beautiful-dnd'
 import { IinitializeLayerData, IinitialLayer, IlayerData } from '../../interfaces/Ilayers'
 import AddLayerSlideover from './AddLayerSlideover'
 import NetworkDropdown from './NetworkDropdown'
@@ -36,12 +39,15 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
     setLayerData(_newLayerData)
   }
 
+  const [isBrowser, setIsBrowser] = useState('undefined')
+
   useEffect(() => {
     const unformattedLayers = localStorage.getItem('layers')
     if (unformattedLayers) {
       let layers = JSON.parse(unformattedLayers)
       setLayerData(layers)
     }
+    setIsBrowser(typeof window)
   }, [])
 
   const toggleSlideover = (state: boolean) => {
@@ -77,55 +83,116 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
       <div className='w-full p-8 border-b border-accent2'>
         <h1 className='mb-8 text-3xl text-white'>layers</h1>
         <div className='grid w-full pt-6'>
-          <div className='grid w-full'>
-            {layerData.map((layer, index) => (
-              <div
-                className='grid cursor-pointer grid-cols-[1fr_5fr] grid-rows-[auto_auto] w-full mb-6'
-                key={layer.layerName}
-                onClick={() => toggleLayerOpen(layer.layerName)}>
-                <div className='grid items-center w-full text-accent7 justify-items-center'>
-                  <div className='w-max'>
-                    {layersOpen.includes(layer.layerName) ? (
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='w-6 h-6'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        stroke='currentColor'
-                        strokeWidth={2}>
-                        <path strokeLinecap='round' strokeLinejoin='round' d='M19 9l-7 7-7-7' />
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='w-6 h-6'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        stroke='currentColor'
-                        strokeWidth={2}>
-                        <path strokeLinecap='round' strokeLinejoin='round' d='M9 5l7 7-7 7' />
-                      </svg>
-                    )}
-                  </div>
-                </div>
-                <div className='w-full p-2 text-right border bg-background text-accent7 justify-self-end border-accent7'>
-                  {layer.layerName}
-                </div>
-                <div className='w-full'></div>
-                {layersOpen.includes(layer.layerName) ? (
-                  <div className='w-5/6 text-right justify-self-end text-accent7'>
-                    {layerData[index]?.attributes.map((n) => (
-                      <div className='' key={n.image}>
-                        <u className='cursor-pointer' onClick={() => openBase64(n.image)}>
-                          {n.name}
-                        </u>
-                      </div>
+          {isBrowser !== 'undefined' ? (
+            <DragDropContext
+              onDragEnd={(param) => {
+                const srcI = param.source.index
+                const destI = param.destination?.index
+                if (destI !== undefined && layerData !== undefined && srcI !== undefined) {
+                  const srcElement = layerData[srcI]
+                  const destElement = layerData[destI]
+                  if (destElement && srcElement) {
+                    let newArray = layerData
+                    newArray[srcI] = destElement
+                    newArray[destI] = srcElement
+                    setLayerData(newArray)
+                    localStorage.setItem('layers', JSON.stringify(layerData))
+                  }
+                }
+              }}>
+              <Droppable droppableId='droppable-1'>
+                {(provided, _) => (
+                  <div ref={provided.innerRef} className='grid w-full' {...provided.droppableProps}>
+                    {layerData.map((layer, index) => (
+                      <Draggable
+                        key={layer.layerName}
+                        draggableId={'draggable-' + layer.layerName}
+                        index={index}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className='grid grid-cols-[1fr_5fr] grid-rows-[auto_auto] w-full mb-6'>
+                            <div
+                              onClick={() => toggleLayerOpen(layer.layerName)}
+                              className='grid items-center w-full cursor-pointer text-accent7 justify-items-center'>
+                              <div className='w-max'>
+                                {layersOpen.includes(layer.layerName) ? (
+                                  <svg
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    className='w-6 h-6'
+                                    fill='none'
+                                    viewBox='0 0 24 24'
+                                    stroke='currentColor'
+                                    strokeWidth={2}>
+                                    <path
+                                      strokeLinecap='round'
+                                      strokeLinejoin='round'
+                                      d='M19 9l-7 7-7-7'
+                                    />
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    className='w-6 h-6'
+                                    fill='none'
+                                    viewBox='0 0 24 24'
+                                    stroke='currentColor'
+                                    strokeWidth={2}>
+                                    <path
+                                      strokeLinecap='round'
+                                      strokeLinejoin='round'
+                                      d='M9 5l7 7-7 7'
+                                    />
+                                  </svg>
+                                )}
+                              </div>
+                            </div>
+                            <div className='grid w-full grid-cols-[max-content_auto] p-2 text-right border bg-background text-accent7 justify-self-end border-accent7'>
+                              <span
+                                className='cursor-pointer text-accent5'
+                                onClick={() => console.log('clicked')}>
+                                <svg
+                                  xmlns='http://www.w3.org/2000/svg'
+                                  className='w-6 h-6'
+                                  fill='none'
+                                  viewBox='0 0 24 24'
+                                  stroke='currentColor'
+                                  strokeWidth={2}>
+                                  <path
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    d='M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z'
+                                  />
+                                </svg>
+                              </span>
+                              <p>{layer.layerName}</p>
+                            </div>
+                            <div className='grid items-center w-full justify-items-center text-accent5'></div>
+                            {layersOpen.includes(layer.layerName) ? (
+                              <div className='w-5/6 text-right justify-self-end text-accent7'>
+                                {layerData[index]?.attributes.map((n) => (
+                                  <div className='' key={n.image}>
+                                    <u
+                                      className='cursor-pointer'
+                                      onClick={() => openBase64(n.image)}>
+                                      {n.name}
+                                    </u>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : null}
+                          </div>
+                        )}
+                      </Draggable>
                     ))}
+                    {provided.placeholder}
                   </div>
-                ) : null}
-              </div>
-            ))}
-          </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          ) : null}
           <Link href='/'>
             <button
               type='button'
