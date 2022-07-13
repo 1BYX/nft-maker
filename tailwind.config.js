@@ -27,6 +27,9 @@ module.exports = {
         successDefault: '#0070F3',
         successLight: '#3291FF',
       },
+      boxShadow: {
+        '3xl': '0px 0px 50px 7px #000000',
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],

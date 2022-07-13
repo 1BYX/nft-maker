@@ -8,7 +8,10 @@ import { useDropzone } from 'react-dropzone'
 import { TrueLiteral } from 'typescript'
 
 interface IAddLayerSlideover {
-  slideoverOpen: boolean
+  slideoverOpen: {
+    isOpen: boolean
+    initialData: string
+  }
   toggleSlideover: (state: boolean) => void
   updateLayerData: (_newLayerData: IlayerData) => void
 }
@@ -27,6 +30,10 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
       image: string
     }>
   >([])
+
+  useEffect(() => {
+    setLayerName(slideoverOpen.initialData)
+  }, [slideoverOpen.initialData])
 
   const [files, setFiles] = useState<any>(null)
 
@@ -103,7 +110,6 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
 
       layers.forEach((l: any) => {
         if (l.layerName === layerName) {
-          console.error('there already exists a layer with this name')
           exists = true
           return
         }
@@ -131,7 +137,27 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
         const stringifiedLayers = JSON.stringify(layers)
         localStorage.setItem('layers', stringifiedLayers)
       } else {
-        return
+        const unformattedLayers = localStorage.getItem('layers')
+        if (unformattedLayers) {
+          let layers = JSON.parse(unformattedLayers)
+          let targetLayerArr = layers.filter((l: any) => {
+            return l.layerName === layerName
+          })
+          let targetLayer = targetLayerArr[0]
+          for (let i = 0; i < tempLayerAttributes.length; i++) {
+            targetLayer.attributes.push({
+              layer: layerName,
+              name: tempLayerAttributes[i]?.name,
+              image: tempLayerAttributes[i]?.image,
+            })
+          }
+          layers.forEach((l: any) => {
+            if (l.layerName === layerName) {
+              l = targetLayer
+            }
+          })
+          localStorage.setItem('layers', JSON.stringify(layers))
+        }
       }
     } else {
       console.log('made it to else in saveSubmission function')
@@ -162,7 +188,7 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
   }
 
   return (
-    <Transition.Root show={slideoverOpen} as={Fragment}>
+    <Transition.Root show={slideoverOpen.isOpen} as={Fragment}>
       <Dialog as='div' className='relative z-10' onClose={() => toggleSlideover(false)}>
         <div className='fixed inset-0' />
         <div className='fixed inset-0 overflow-hidden'>

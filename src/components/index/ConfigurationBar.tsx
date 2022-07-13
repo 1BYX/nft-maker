@@ -29,17 +29,20 @@ interface IConfigurationBar {
 }
 
 const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
-  const [slideoverOpen, setSlideoverOpen] = useState(false)
-
+  const [slideoverOpen, setSlideoverOpen] = useState({
+    isOpen: false,
+    initialData: '',
+  })
   const [layerData, setLayerData] = useState<IlayerData>([])
-
   const [layersOpen, setLayersOpen] = useState<Array<string>>([])
-
   const updateLayerData = (_newLayerData: IlayerData) => {
     setLayerData(_newLayerData)
   }
-
   const [isBrowser, setIsBrowser] = useState('undefined')
+  const [layerOptions, setLayerOptions] = useState({
+    layerName: '',
+    isOpen: false,
+  })
 
   useEffect(() => {
     const unformattedLayers = localStorage.getItem('layers')
@@ -51,7 +54,10 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
   }, [])
 
   const toggleSlideover = (state: boolean) => {
-    setSlideoverOpen(state)
+    setSlideoverOpen({
+      isOpen: state,
+      initialData: '',
+    })
   }
 
   const chooseNetwork = (_network: string) => {
@@ -76,6 +82,46 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
         url +
         '" frameborder="0" style="border:0; display:grid; justify-items:center; align-items:center; background-color:black; top:50%; left:0%; bottom:0px; margin-left:0%; right:0px; width:100%; height:100%;" allowfullscreen></iframe>'
     )
+  }
+
+  const updateLayerOptions = (_layerName: string) => {
+    console.log('clicked')
+    if (layerOptions.layerName !== _layerName && layerOptions.layerName !== '') {
+      setLayerOptions({
+        layerName: '',
+        isOpen: false,
+      })
+      setLayerOptions((prevOptions) => ({
+        layerName: _layerName,
+        isOpen: !prevOptions.isOpen,
+      }))
+    } else {
+      setLayerOptions((prevOptions) => ({
+        layerName: _layerName,
+        isOpen: !prevOptions.isOpen,
+      }))
+    }
+  }
+
+  const deleteLayer = (_layerName: string) => {
+    console.log('delete')
+    const unformattedLayers = localStorage.getItem('layers')
+    if (unformattedLayers) {
+      console.log('made it to if on delete')
+      let layers = JSON.parse(unformattedLayers)
+      const newLayers = layers.filter((obj: any) => {
+        return obj.layerName !== _layerName
+      })
+      localStorage.setItem('layers', JSON.stringify(newLayers))
+      setLayerData(newLayers)
+    }
+  }
+
+  const editLayer = (_layerName: string) => {
+    setSlideoverOpen({
+      isOpen: true,
+      initialData: _layerName,
+    })
   }
 
   return (
@@ -113,7 +159,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className='grid grid-cols-[1fr_5fr] grid-rows-[auto_auto] w-full mb-6'>
+                            className='grid relative grid-cols-[1fr_5fr] grid-rows-[auto_auto] w-full mb-6'>
                             <div
                               onClick={() => toggleLayerOpen(layer.layerName)}
                               className='grid items-center w-full cursor-pointer text-accent7 justify-items-center'>
@@ -152,7 +198,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                             <div className='grid w-full grid-cols-[max-content_auto] p-2 text-right border bg-background text-accent7 justify-self-end border-accent7'>
                               <span
                                 className='cursor-pointer text-accent5'
-                                onClick={() => console.log('clicked')}>
+                                onClick={() => updateLayerOptions(layer.layerName)}>
                                 <svg
                                   xmlns='http://www.w3.org/2000/svg'
                                   className='w-6 h-6'
@@ -168,6 +214,20 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                                 </svg>
                               </span>
                               <p>{layer.layerName}</p>
+                              {layer.layerName == layerOptions.layerName && layerOptions.isOpen ? (
+                                <div className='absolute z-20 grid w-2/3 grid-cols-2 p-2 opacity-90 shadow-3xl top-px right-1.5 bg-background text-accent7'>
+                                  <u
+                                    onClick={() => editLayer(layer.layerName)}
+                                    className='px-4 border-r cursor-pointer border-accent7'>
+                                    edit
+                                  </u>
+                                  <u
+                                    onClick={() => deleteLayer(layer.layerName)}
+                                    className='cursor-pointer'>
+                                    delete layer
+                                  </u>
+                                </div>
+                              ) : null}
                             </div>
                             <div className='grid items-center w-full justify-items-center text-accent5'></div>
                             {layersOpen.includes(layer.layerName) ? (
@@ -196,7 +256,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
           <Link href='/'>
             <button
               type='button'
-              onClick={() => toggleSlideover(!slideoverOpen)}
+              onClick={() => toggleSlideover(!slideoverOpen.isOpen)}
               className='grid grid-cols-[max-content_max-content] items-center w-full px-4 py-2 text-black shadow-sm justify-end bg-accent7 hover:bg-accent6'>
               <PlusIcon className='w-5 h-5 mr-3 -ml-1' aria-hidden='true' />
               add layer

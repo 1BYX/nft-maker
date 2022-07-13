@@ -24,8 +24,8 @@ const user = {
 }
 const navigation = [
   { name: 'create', href: '/', icon: PlusIcon },
-  { name: 'my archive', href: '/archive', icon: ArchiveIcon },
-  { name: 'help', href: '/help', icon: QuestionMarkCircleIcon },
+  { name: 'my archive', href: '/', icon: ArchiveIcon },
+  { name: 'help', href: '/', icon: QuestionMarkCircleIcon },
 ]
 
 export default function Example() {
