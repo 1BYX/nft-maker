@@ -215,7 +215,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                               </span>
                               <p>{layer.layerName}</p>
                               {layer.layerName == layerOptions.layerName && layerOptions.isOpen ? (
-                                <div className='absolute z-20 grid w-2/3 grid-cols-2 p-2 opacity-90 shadow-3xl top-px right-1.5 bg-background text-accent7'>
+                                <div className='absolute z-20 grid w-2/3 grid-cols-2 p-2 opacity-90 top-px right-1.5 bg-background text-accent7'>
                                   <u
                                     onClick={() => editLayer(layer.layerName)}
                                     className='px-4 border-r cursor-pointer border-accent7'>
