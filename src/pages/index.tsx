@@ -32,7 +32,7 @@ const navigation = [
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const [showConfig, setShowConfig] = useState(true)
+  const [showConfig, setShowConfig] = useState(false)
 
   const [network, setNetwork] = useState('eth')
   const [collectionName, setCollectionName] = useState('')
@@ -211,7 +211,7 @@ export default function Example() {
         {/* Static sidebar for desktop */}
         <div className='hidden lg:flex lg:flex-shrink-0'>
           <div className='flex flex-col w-20'>
-            <div className='flex flex-col flex-1 min-h-0 overflow-y-scroll border-r bg-background border-accent2'>
+            <div className='flex flex-col flex-1 overflow-y-scroll border-r bg-background border-accent2'>
               <div className='flex-1'>
                 <Link href='/'>
                   <div className='flex items-center justify-center py-4 cursor-pointer bg-accent1'>
@@ -332,7 +332,7 @@ export default function Example() {
 
             <section
               aria-labelledby='primary-heading'
-              className='flex flex-col flex-1 min-w-0 overflow-y-hidden h-max lg:order-last bg-accent1'>
+              className='flex flex-col flex-1 h-full min-w-0 overflow-y-auto lg:order-last bg-accent1'>
               <DisplayDataBar
                 updateErrors={updateErrors}
                 network={network}
