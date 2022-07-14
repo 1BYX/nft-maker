@@ -192,7 +192,7 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
 
   return (
     <div className='w-full h-full'>
-      <div className='grid w-full p-10 border-b border-accent2 grid-cols-[1fr_max-content_max-content] items-center justify-end'>
+      <div className='grid w-full p-6 lg:p-10 border-b border-accent2 grid-cols-[1fr_max-content_max-content] items-center justify-end'>
         {showProgress ? (
           <div className='grid w-full grid-cols-[max-content_max-content] items-center gap-4 text-white justify-self-start'>
             <div className='w-32 h-2.5 bg-background'>
@@ -204,7 +204,7 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
           <div className='w-full'>
             <button
               onClick={generateSample}
-              className='px-2 py-1 border bg-background hover:bg-accent2 justify-self-start w-max border-accent7 text-accent7'>
+              className='px-1 text-sm border lg:text-base lg:px-2 lg:py-1 bg-background hover:bg-accent2 justify-self-start w-max border-accent7 text-accent7'>
               run sample
             </button>
           </div>
@@ -228,7 +228,7 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
               !isFinishedGenerating
                 ? 'bg-accent2'
                 : 'bg-highlightYellow hover:bg-highlightYellowPressed'
-            } inline-flex items-center px-6 py-4 text-2xl shadow-sm text-accent1`}>
+            } inline-flex items-center px-3 lg:px-6 py-2 lg:py-4 lg:text-2xl text-xl shadow-sm text-accent1`}>
             generate
           </button>
         </div>
@@ -237,10 +237,10 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
         <div className='grid w-full'>
           <div className='grid w-full border-b border-accent2'>
             <h1 className='pt-8 pl-8 text-3xl text-accent7'>preview</h1>
-            <div className='grid grid-cols-3 pt-8 pb-16 w-max gap-7 justify-self-center'>
+            <div className='grid grid-cols-3 gap-2 pt-8 pb-16 w-max md:gap-7 justify-self-center'>
               {previewArray.map((i, index) => (
                 <div className='text-white w-max' key={index}>
-                  <img className='w-48' src={i} />
+                  <img className='w-20 sm:36 md:w-40' src={i} />
                 </div>
               ))}
             </div>

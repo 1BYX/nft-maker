@@ -32,6 +32,8 @@ const navigation = [
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  const [showConfig, setShowConfig] = useState(true)
+
   const [network, setNetwork] = useState('eth')
   const [collectionName, setCollectionName] = useState('')
   const [description, setDescription] = useState('')
@@ -209,7 +211,7 @@ export default function Example() {
         {/* Static sidebar for desktop */}
         <div className='hidden lg:flex lg:flex-shrink-0'>
           <div className='flex flex-col w-20'>
-            <div className='flex flex-col flex-1 min-h-0 overflow-y-auto border-r bg-background border-accent2'>
+            <div className='flex flex-col flex-1 min-h-0 overflow-y-scroll border-r bg-background border-accent2'>
               <div className='flex-1'>
                 <Link href='/'>
                   <div className='flex items-center justify-center py-4 cursor-pointer bg-accent1'>
@@ -246,7 +248,7 @@ export default function Example() {
           </div>
         </div>
 
-        <div className='flex flex-col flex-1 min-w-0 overflow-hidden'>
+        <div className='flex flex-col flex-1 h-full min-w-0 overflow-scroll lg:overflow-hidden'>
           {/* Mobile top navigation */}
           <div className='lg:hidden'>
             <div className='flex items-center justify-between px-4 py-2 bg-background sm:px-6 lg:px-8'>
@@ -267,28 +269,44 @@ export default function Example() {
             </div>
           </div>
 
-          <main className='flex flex-1 overflow-hidden'>
+          <main
+            className={`grid ${
+              showConfig ? 'grid-rows-[max-content_auto_auto]' : 'grid-rows-[max-content_auto]'
+            } h-full lg:grid-cols-[max-content_auto] lg:grid-rows-1 overlow-scroll lg:overflow-hidden`}>
             {/* Primary column */}
-            <section
-              aria-labelledby='primary-heading'
-              className='flex flex-col flex-1 h-full min-w-0 overflow-y-auto lg:order-last bg-accent1'>
-              <DisplayDataBar
-                updateErrors={updateErrors}
-                network={network}
-                collectionName={collectionName}
-                description={description}
-                amount={amount}
-                baseUri={baseUri}
-                width={width}
-                height={height}
-                dnaTorrance={dnaTorrance}
-              />
-              {/* Your content */}
-            </section>
-
-            {/* Secondary column (hidden on smaller screens) */}
-            <aside className='hidden lg:block lg:flex-shrink-0 lg:order-first'>
-              <div className='relative flex flex-col h-full overflow-y-auto border-r w-96 bg-accent1 border-accent2'>
+            <div className='grid w-full lg:hidden grid-cols-[max-content_max-content] gap-4 justify-end p-8 text-2xl border-y border-accent2 bg-accent1 text-accent7 justify-items-end'>
+              <div
+                className='grid items-center justify-self-start text-accent7 w-max'
+                onClick={() => setShowConfig((prevShow) => !prevShow)}>
+                {showConfig ? (
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='w-6 h-6'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                    strokeWidth={2}>
+                    <path strokeLinecap='round' strokeLinejoin='round' d='M19 9l-7 7-7-7' />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='w-6 h-6'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                    strokeWidth={2}>
+                    <path strokeLinecap='round' strokeLinejoin='round' d='M9 5l7 7-7 7' />
+                  </svg>
+                )}
+              </div>
+              <p>configuration</p>
+            </div>
+            <aside
+              className={`${
+                showConfig ? 'block' : 'hidden'
+              } lg:block lg:flex-shrink-0 lg:order-first`}>
+              <div className='relative flex flex-col w-full h-full overflow-y-auto border-b lg:border-r lg:border-b-0 lg:w-96 bg-accent1 border-accent2'>
                 <ConfigurationBar
                   errors={errors}
                   updateErrors={updateErrors}
@@ -311,6 +329,25 @@ export default function Example() {
                 />
               </div>
             </aside>
+
+            <section
+              aria-labelledby='primary-heading'
+              className='flex flex-col flex-1 min-w-0 overflow-y-hidden h-max lg:order-last bg-accent1'>
+              <DisplayDataBar
+                updateErrors={updateErrors}
+                network={network}
+                collectionName={collectionName}
+                description={description}
+                amount={amount}
+                baseUri={baseUri}
+                width={width}
+                height={height}
+                dnaTorrance={dnaTorrance}
+              />
+              {/* Your content */}
+            </section>
+
+            {/* Secondary column (hidden on smaller screens) */}
           </main>
         </div>
       </div>
