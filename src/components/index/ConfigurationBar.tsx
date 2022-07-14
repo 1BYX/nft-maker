@@ -9,6 +9,7 @@ import AddLayerSlideover from './AddLayerSlideover'
 import NetworkDropdown from './NetworkDropdown'
 import onClickOutside from 'react-onclickoutside'
 import { useClickOutside } from '../commons/useClickOutside'
+import LayerDeleteModal from '../commons/layerDeleteModal'
 
 interface IConfigurationBar {
   errors: Array<any>
@@ -64,6 +65,11 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
     })
   }
 
+  const [layerDelete, setLayerDelete] = useState({
+    layerName: '',
+    isOpen: false,
+  })
+
   const chooseNetwork = (_network: string) => {
     props.setNetwork(_network)
   }
@@ -105,6 +111,13 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
         isOpen: !prevOptions.isOpen,
       }))
     }
+  }
+
+  const openLayerDeleteModal = (_layerName: string) => {
+    setLayerDelete({
+      layerName: _layerName,
+      isOpen: true,
+    })
   }
 
   const deleteLayer = (_layerName: string) => {
@@ -240,13 +253,19 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                                     edit
                                   </u>
                                   <u
-                                    onClick={() => deleteLayer(layer.layerName)}
+                                    onClick={() => openLayerDeleteModal(layer.layerName)}
                                     className='cursor-pointer'>
                                     delete layer
                                   </u>
                                 </div>
                               ) : null}
                             </div>
+                            {layerDelete.isOpen && layerDelete.layerName === layer.layerName ? (
+                              <LayerDeleteModal
+                                deleteLayer={deleteLayer}
+                                layerName={layer.layerName}
+                              />
+                            ) : null}
                             <div className='grid items-center w-full justify-items-center text-accent5'></div>
                             {layersOpen.includes(layer.layerName) ? (
                               <div className='w-5/6 text-right justify-self-end text-accent7'>
