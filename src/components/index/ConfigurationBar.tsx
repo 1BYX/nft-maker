@@ -2,11 +2,13 @@ import { PlusIcon } from '@heroicons/react/outline'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
 import { listenerCount } from 'process'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { DragDropContext, Droppable, Draggable, resetServerContext } from 'react-beautiful-dnd'
 import { IinitializeLayerData, IinitialLayer, IlayerData } from '../../interfaces/Ilayers'
 import AddLayerSlideover from './AddLayerSlideover'
 import NetworkDropdown from './NetworkDropdown'
+import onClickOutside from 'react-onclickoutside'
+import { useClickOutside } from './useClickOutside'
 
 interface IConfigurationBar {
   setNetwork: (param: string) => void
@@ -124,6 +126,14 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
     })
   }
 
+  const domNode = useClickOutside(() => {
+    setLayerOptions({
+      layerName: '',
+      isOpen: false,
+    })
+    console.log('closing')
+  })
+
   return (
     <div className='w-full h-full'>
       <div className='w-full p-8 border-b border-accent2'>
@@ -195,7 +205,9 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                                 )}
                               </div>
                             </div>
-                            <div className='grid w-full grid-cols-[max-content_auto] p-2 text-right border bg-background text-accent7 justify-self-end border-accent7'>
+                            <div
+                              ref={domNode}
+                              className='grid w-full grid-cols-[max-content_auto] p-2 text-right border bg-background text-accent7 justify-self-end border-accent7'>
                               <span
                                 className='cursor-pointer text-accent5'
                                 onClick={() => updateLayerOptions(layer.layerName)}>

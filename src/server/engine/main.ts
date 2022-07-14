@@ -408,7 +408,7 @@ const GENERATE = async (
     updateIsFinishedGenerating(true)
     setTimeout(() => {
       toggleShowProgress(false)
-    }, 3000)
+    }, 1000)
     cancelButton?.removeEventListener('click', () => {
       imageArray = []
       jsonArray = []

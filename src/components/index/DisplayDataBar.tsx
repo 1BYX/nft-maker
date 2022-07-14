@@ -182,7 +182,9 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
             onClick={generate}
             disabled={!isFinishedGenerating}
             className={`${
-              showProgress ? 'bg-accent2' : 'bg-highlightYellow hover:bg-highlightYellowPressed'
+              !isFinishedGenerating
+                ? 'bg-accent2'
+                : 'bg-highlightYellow hover:bg-highlightYellowPressed'
             } inline-flex items-center px-6 py-4 text-2xl shadow-sm text-accent1`}>
             generate
           </button>
