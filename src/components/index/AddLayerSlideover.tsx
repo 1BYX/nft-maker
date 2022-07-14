@@ -7,7 +7,6 @@ import { IinitializeLayerData, IinitialLayer, IlayerData } from '../../interface
 import { useDropzone } from 'react-dropzone'
 import { TrueLiteral } from 'typescript'
 import ErrorNotification from '../commons/errorNotification'
-import { setNestedObjectValues } from 'formik'
 
 interface IAddLayerSlideover {
   slideoverOpen: {
