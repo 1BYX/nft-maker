@@ -6,6 +6,8 @@ import _logger from 'next-auth/utils/logger'
 import { IinitializeLayerData, IinitialLayer, IlayerData } from '../../interfaces/Ilayers'
 import { useDropzone } from 'react-dropzone'
 import { TrueLiteral } from 'typescript'
+import ErrorNotification from '../commons/errorNotification'
+import { setNestedObjectValues } from 'formik'
 
 interface IAddLayerSlideover {
   slideoverOpen: {
@@ -22,6 +24,7 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
   updateLayerData,
 }) => {
   const [layerName, setLayerName] = useState('')
+  const [layerNameError, setLayerNameError] = useState(false)
 
   const [tempLayerAttributes, setTempLayerAttributes] = useState<
     Array<{
@@ -30,6 +33,12 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
       image: string
     }>
   >([])
+
+  const [showNotification, setShowNotification] = useState(false)
+
+  const closeShow = () => {
+    setShowNotification(false)
+  }
 
   useEffect(() => {
     setLayerName(slideoverOpen.initialData)
@@ -43,6 +52,7 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
 
   const onDrop = (acceptedFiles: Array<any>) => {
     setTempLayerAttributes([])
+    setShowNotification(false)
     let localLayerAttributes: Array<any> = []
 
     for (let i = 0; i < acceptedFiles.length; i++) {
@@ -86,16 +96,27 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
   const { getRootProps, getInputProps } = useDropzone({ onDrop })
 
   const cancelSubmission = () => {
+    setShowNotification(false)
+    setLayerNameError(false)
     toggleSlideover(false)
   }
 
   const saveSubmission = () => {
     let exists = false
-    if (!layerName || layerName === '') {
-      console.log('no layer name')
+    if ((!layerName || layerName === '') && tempLayerAttributes.length < 1) {
+      setLayerNameError(true)
+      setShowNotification(true)
       return
     }
-
+    if (!layerName || layerName === '') {
+      setLayerNameError(true)
+      return
+    }
+    if (tempLayerAttributes.length < 1) {
+      setShowNotification(true)
+      return
+    }
+    setLayerNameError(false)
     let localAttributes = tempLayerAttributes
     localAttributes.forEach((la) => {
       la.layer = layerName
@@ -225,18 +246,31 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                       <div className='relative flex-1 px-4 mt-6 overflow-scroll sm:px-6'>
                         {/* Replace with your content */}
                         <div className='grid w-full mb-8 justify-items-end'>
-                          <label htmlFor='email' className='block text-sm font-medium text-accent7'>
-                            layer name
+                          <label
+                            htmlFor='email'
+                            className={`${
+                              layerNameError ? 'text-errorDefault' : 'text-accent7'
+                            } block text-sm font-medium`}>
+                            {layerNameError ? (
+                              <p>you must provide a layer name</p>
+                            ) : (
+                              <p>layer name</p>
+                            )}
                           </label>
                           <div className='w-2/3 mt-1'>
                             <input
-                              type='email'
-                              name='email'
-                              id='email'
-                              className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
+                              type='text'
+                              name='layerName'
+                              id='layerName'
+                              className={`${
+                                layerNameError ? 'border-errorDefault' : 'border-accent6'
+                              } block w-full shadow-sm text-accent7 bg-background sm:text-sm`}
                               placeholder='hats'
                               value={layerName}
-                              onChange={(e) => setLayerName(e.target.value)}
+                              onChange={(e) => {
+                                setLayerNameError(false)
+                                setLayerName(e.target.value)
+                              }}
                             />
                           </div>
                         </div>
@@ -302,6 +336,7 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                         className='inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-black border border-transparent shadow-sm bg-accent7 hover:bg-accent6'>
                         save
                       </button>
+                      <ErrorNotification show={showNotification} closeShow={closeShow} />
                     </div>
                   </div>
                 </Dialog.Panel>

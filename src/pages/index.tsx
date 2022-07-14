@@ -15,6 +15,7 @@ import AddLayerSlideover from '../components/index/AddLayerSlideover'
 import ConfigurationBar from '../components/index/ConfigurationBar'
 import DisplayDataBar from '../components/index/DisplayDataBar'
 import { useEffect } from 'react'
+import ErrorNotification from '../components/commons/errorNotification'
 
 const user = {
   name: 'Emily Selman',

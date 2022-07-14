@@ -8,7 +8,7 @@ import { IinitializeLayerData, IinitialLayer, IlayerData } from '../../interface
 import AddLayerSlideover from './AddLayerSlideover'
 import NetworkDropdown from './NetworkDropdown'
 import onClickOutside from 'react-onclickoutside'
-import { useClickOutside } from './useClickOutside'
+import { useClickOutside } from '../commons/useClickOutside'
 
 interface IConfigurationBar {
   errors: Array<any>
@@ -208,7 +208,11 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                               </div>
                             </div>
                             <div
-                              ref={domNode}
+                              ref={
+                                layerOptions.isOpen && layerOptions.layerName == layer.layerName
+                                  ? domNode
+                                  : null
+                              }
                               className='grid w-full grid-cols-[max-content_auto] p-2 text-right border bg-background text-accent7 justify-self-end border-accent7'>
                               <span
                                 className='cursor-pointer text-accent5'
