@@ -4,12 +4,13 @@ import { Transition } from '@headlessui/react'
 import { CheckCircleIcon, ExclamationIcon } from '@heroicons/react/outline'
 import { XIcon } from '@heroicons/react/solid'
 
-interface IErrorNotification {
+interface IDNAerrorNotification {
   show: boolean
   closeShow: () => void
+  amount: number
 }
 
-const ErrorNotification: React.FC<IErrorNotification> = ({ show, closeShow }) => {
+const DNAerrorNotification: React.FC<IDNAerrorNotification> = ({ show, closeShow, amount }) => {
   return (
     <>
       {/* Global notification live region, render this permanently at the end of the document */}
@@ -34,9 +35,9 @@ const ErrorNotification: React.FC<IErrorNotification> = ({ show, closeShow }) =>
                     <ExclamationIcon className='w-6 h-6 text-errorDefault' aria-hidden='true' />
                   </div>
                   <div className='ml-3 w-0 flex-1 pt-0.5'>
-                    <p className='text-sm font-bold text-accent7'>error while saving layer</p>
+                    <p className='text-sm font-bold text-accent7'>error while generating nfts</p>
                     <p className='mt-1 text-sm text-accent7'>
-                      you must provide at least one element
+                      you need more layers or attributes to grow your collection to {amount}
                     </p>
                   </div>
                   <div className='flex flex-shrink-0 ml-4'>
@@ -58,4 +59,4 @@ const ErrorNotification: React.FC<IErrorNotification> = ({ show, closeShow }) =>
   )
 }
 
-export default ErrorNotification
+export default DNAerrorNotification

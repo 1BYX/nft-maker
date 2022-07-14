@@ -73,7 +73,8 @@ const GENERATE = async (
   updateIsFinishedGenerating: (fnished: boolean) => void,
   updatePercentage: (percentage: number) => void,
   toggleShowProgress: (show: boolean) => void,
-  getCancelFlag: () => boolean
+  getCancelFlag: () => boolean,
+  updateDNAerror: () => void
 ) => {
   const {
     format,
@@ -95,7 +96,6 @@ const GENERATE = async (
     imageArray = []
     jsonArray = []
     jsonSingleFile = ''
-    console.log('YOU JUST CANCELLED IN EVENTLISTENER')
     editionCount = config.layerConfigurations.growEditionSizeTo
     return
   })
@@ -255,8 +255,6 @@ const GENERATE = async (
           loadedElements.push(loadLayerImg(layer))
         })
 
-        console.log('startCreating iteration')
-
         await Promise.all(loadedElements).then((renderObjectArray) => {
           ctx.clearRect(0, 0, format.width, format.height)
           renderObjectArray.forEach((renderObject, index) => {
@@ -276,10 +274,8 @@ const GENERATE = async (
         console.log('DNA exists!')
         failedCount++
         if (failedCount >= uniqueDnaTorrance) {
-          console.log(
-            `You need more layers or elements to grow your edition to ${layerConfigurations.growEditionSizeTo} artworks!`
-          )
-          return
+          updateDNAerror()
+          break
         }
       }
     }
@@ -302,7 +298,7 @@ const GENERATE = async (
         resolve({ layer: _layer, loadedImage: image })
       })
     } catch (error) {
-      console.error('Error loading image:', error)
+      throw new Error('Error loading image')
     }
   }
 
@@ -403,7 +399,6 @@ const GENERATE = async (
 
   const writeMetaData = (_data: string) => {
     jsonSingleFile = _data
-    console.log('WRITE METADATA IS RUN')
     updateGeneratedArrays({ imageArray, jsonArray, jsonSingleFile })
     updateIsFinishedGenerating(true)
     setTimeout(() => {
@@ -413,7 +408,6 @@ const GENERATE = async (
       imageArray = []
       jsonArray = []
       jsonSingleFile = ''
-      console.log('YOU JUST CANCELLED IN EVENTLISTENER')
       editionCount = config.layerConfigurations.growEditionSizeTo
       return
     })
@@ -430,7 +424,13 @@ const GENERATE = async (
     ]
   }
 
-  startCreating()
+  try {
+    startCreating()
+  } catch (err) {
+    throw new Error(
+      'you need more layers or attributes to grow your collection to ' + uniqueDnaTorrance
+    )
+  }
 }
 
 export default GENERATE

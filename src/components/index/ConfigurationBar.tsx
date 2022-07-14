@@ -120,6 +120,31 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
     })
   }
 
+  const deleteAttribute = (_layerName: string, _attributeName: string) => {
+    const unformattedLayers = localStorage.getItem('layers')
+    if (unformattedLayers) {
+      const layers = JSON.parse(unformattedLayers)
+      console.log('layers -> ', layers)
+      const newLayers = layers
+      for (let i = 0; i < layers.length; i++) {
+        if (layers[i].layerName == _layerName) {
+          if (layers[i].attributes.length == 1) {
+            deleteLayer(layers[i].layerName)
+            return
+          }
+          const newTargetLayerAttributes = layers[i].attributes.filter((la: any) => {
+            return la.name !== _attributeName
+          })
+          layers[i].attributes = newTargetLayerAttributes
+          console.log('newLayers -> ', newLayers)
+          localStorage.setItem('layers', JSON.stringify(newLayers))
+          setLayerData(newLayers)
+        }
+      }
+    }
+    return
+  }
+
   const deleteLayer = (_layerName: string) => {
     console.log('delete')
     const unformattedLayers = localStorage.getItem('layers')
@@ -184,7 +209,7 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className='grid relative grid-cols-[1fr_5fr] grid-rows-[auto_auto] w-full mb-6'>
+                            className='grid relative grid-cols-[1fr_5fr] grid-rows-[auto_auto] gap-y-4 w-full mb-6'>
                             <div
                               onClick={() => toggleLayerOpen(layer.layerName)}
                               className='grid items-center w-full cursor-pointer text-accent7 justify-items-center'>
@@ -268,14 +293,31 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                             ) : null}
                             <div className='grid items-center w-full justify-items-center text-accent5'></div>
                             {layersOpen.includes(layer.layerName) ? (
-                              <div className='w-5/6 text-right justify-self-end text-accent7'>
+                              <div className='grid w-5/6 gap-2 mr-4 text-right justify-self-end text-accent7'>
                                 {layerData[index]?.attributes.map((n) => (
-                                  <div className='' key={n.image}>
+                                  <div
+                                    className='grid grid-cols-[auto_max-content] gap-4'
+                                    key={n.image}>
                                     <u
                                       className='cursor-pointer'
                                       onClick={() => openBase64(n.image)}>
                                       {n.name}
                                     </u>
+                                    <div
+                                      className='cursor-pointer w-max h-max text-accent5'
+                                      onClick={() => deleteAttribute(n.layer, n.name)}>
+                                      <svg
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        className='w-5 h-5'
+                                        viewBox='0 0 20 20'
+                                        fill='currentColor'>
+                                        <path
+                                          fillRule='evenodd'
+                                          d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
+                                          clipRule='evenodd'
+                                        />
+                                      </svg>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
