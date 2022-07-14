@@ -5,14 +5,15 @@ import { IoutputArrays, TimageArray } from '../../interfaces/outputArrays'
 import { sampleLayers } from '../filetransfer/temp-storage/sampleLayers'
 
 type IDisplayDataBar = {
+  updateErrors: (errors: Array<any>) => void
   network: string
   collectionName: string
   description: string
-  amount: number
+  amount: string
   baseUri: string
-  width: number
-  height: number
-  dnaTorrance: number
+  width: string
+  height: string
+  dnaTorrance: string
 }
 
 const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
@@ -33,10 +34,39 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
     setShowProgress(show)
   }
 
+  const validateConfig = () => {
+    let errors: Array<string> = []
+    if (config.network === '' || !config.network) {
+      errors.push('network')
+    }
+    if (config.collectionName === '' || !config.collectionName) {
+      errors.push('collectionName')
+    }
+    if (config.description === '' || !config.description) {
+      errors.push('description')
+    }
+    if (Number(config.amount) === 0 || !config.amount) {
+      errors.push('amount')
+    }
+    if (config.baseUri === '' || !config.baseUri) {
+      errors.push('baseUri')
+    }
+    if (Number(config.width) === 0 || !config.width) {
+      errors.push('width')
+    }
+    if (Number(config.height) === 0 || !config.height) {
+      errors.push('height')
+    }
+    if (Number(config.dnaTorrance) === 0 || !config.dnaTorrance) {
+      errors.push('dnaTorrance')
+    }
+    return errors
+  }
+
   useEffect(() => {
     const determinePreviewArray = () => {
       setPreviewArray([])
-      if (generatedArrays.imageArray.length === config.amount) {
+      if (generatedArrays.imageArray.length === Number(config.amount)) {
         let previews: Array<string | undefined> = []
         for (let i = 0; i < 9; i++) {
           if (generatedArrays.imageArray[i]?.generatedImage) {
@@ -45,17 +75,10 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
         }
         setPreviewArray(previews)
       }
+      console.log('previewArray -> ', previewArray)
     }
     determinePreviewArray()
   }, [isFinishedGenerating])
-
-  const hasDuplicates = (array: Array<string>) => {
-    if (array.length !== new Set(array).size) {
-      return true
-    } else {
-      return false
-    }
-  }
 
   const updateIsFinishedGenerating = (finished: boolean) => {
     setIsFinishedGenerating(finished)
@@ -78,41 +101,46 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
   }
 
   const generate = async () => {
-    setIsFinishedGenerating(false)
-    setIsCancelled(false)
-    setShowProgress(true)
-    const getLayers = () => {
-      const unformattedLayers = localStorage.getItem('layers')
-      if (unformattedLayers) {
-        const layers = JSON.parse(unformattedLayers)
-        return layers
+    const errors = validateConfig()
+    if (errors.length === 0) {
+      setIsFinishedGenerating(false)
+      setIsCancelled(false)
+      setShowProgress(true)
+      const getLayers = () => {
+        const unformattedLayers = localStorage.getItem('layers')
+        if (unformattedLayers) {
+          const layers = JSON.parse(unformattedLayers)
+          return layers
+        }
       }
+
+      const layers = getLayers()
+
+      GENERATE(
+        layers,
+        {
+          format: {
+            width: Number(config.width),
+            height: Number(config.height),
+          },
+          baseUri: config.baseUri,
+          description: config.description,
+          uniqueDnaTorrance: Number(config.dnaTorrance),
+          namePrefix: config.collectionName,
+          network: config.network,
+          layerConfigurations: {
+            growEditionSizeTo: Number(config.amount),
+          },
+        },
+        updateGeneratedArrays,
+        updateIsFinishedGenerating,
+        updatePercentage,
+        toggleShowProgress,
+        getCancelFlag
+      )
+    } else {
+      config.updateErrors(errors)
     }
-
-    const layers = getLayers()
-
-    GENERATE(
-      layers,
-      {
-        format: {
-          width: config.width,
-          height: config.height,
-        },
-        baseUri: config.baseUri,
-        description: config.description,
-        uniqueDnaTorrance: config.dnaTorrance,
-        namePrefix: config.collectionName,
-        network: config.network,
-        layerConfigurations: {
-          growEditionSizeTo: config.amount,
-        },
-      },
-      updateGeneratedArrays,
-      updateIsFinishedGenerating,
-      updatePercentage,
-      toggleShowProgress,
-      getCancelFlag
-    )
   }
 
   const generateSample = () => {
@@ -123,16 +151,16 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
       sampleLayers,
       {
         format: {
-          width: config.width,
-          height: config.height,
+          width: Number(config.width),
+          height: Number(config.height),
         },
         baseUri: config.baseUri,
         description: config.description,
-        uniqueDnaTorrance: config.dnaTorrance,
+        uniqueDnaTorrance: Number(config.dnaTorrance),
         namePrefix: config.collectionName,
         network: config.network,
         layerConfigurations: {
-          growEditionSizeTo: config.amount,
+          growEditionSizeTo: Number(config.amount),
         },
       },
       updateGeneratedArrays,
@@ -195,8 +223,8 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
           <div className='grid w-full border-b border-accent2'>
             <h1 className='pt-8 pl-8 text-3xl text-accent7'>preview</h1>
             <div className='grid grid-cols-3 pt-8 pb-16 w-max gap-7 justify-self-center'>
-              {previewArray.map((i) => (
-                <div className='text-white w-max' key={i}>
+              {previewArray.map((i, index) => (
+                <div className='text-white w-max' key={index}>
                   <img className='w-48' src={i} />
                 </div>
               ))}

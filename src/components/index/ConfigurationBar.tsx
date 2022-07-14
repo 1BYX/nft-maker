@@ -11,23 +11,25 @@ import onClickOutside from 'react-onclickoutside'
 import { useClickOutside } from './useClickOutside'
 
 interface IConfigurationBar {
+  errors: Array<any>
+  updateErrors: (errors: Array<any>) => void
   setNetwork: (param: string) => void
   setCollectionName: (param: string) => void
   setDescription: (param: string) => void
-  setAmount: (param: number) => void
+  setAmount: (param: string) => void
   setBaseUri: (param: string) => void
-  setWidth: (param: number) => void
-  setHeight: (param: number) => void
-  setDnaTorrance: (param: number) => void
+  setWidth: (param: string) => void
+  setHeight: (param: string) => void
+  setDnaTorrance: (param: string) => void
 
   network: string
   collectionName: string
   description: string
-  amount: number
+  amount: string
   baseUri: string
-  width: number
-  height: number
-  dnaTorrance: number
+  width: string
+  height: string
+  dnaTorrance: string
 }
 
 const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
@@ -285,15 +287,25 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
           </div>
         </div>
         <div className='grid w-full justify-items-end'>
-          <label htmlFor='email' className='block text-sm text-accent7'>
-            collection name
+          <label
+            htmlFor='collectionName'
+            className={`${
+              props.errors.includes('collectionName') ? 'text-errorDefault' : 'text-accent7'
+            } block text-sm`}>
+            {props.errors.includes('collectionName') ? (
+              <p>invalid input for collection name</p>
+            ) : (
+              <p>collection name</p>
+            )}
           </label>
           <div className='w-5/6 mt-1'>
             <input
               type='text'
               name='collectionName'
               id='collectionName'
-              className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
+              className={`${
+                props.errors.includes('collectionName') ? 'border-errorDefault' : 'border-accent6'
+              } block w-full shadow-sm text-accent7 bg-background sm:text-sm`}
               placeholder='joyful giraffe golfing club'
               onChange={(e) => props.setCollectionName(e.target.value)}
               value={props.collectionName}
@@ -301,15 +313,25 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
           </div>
         </div>
         <div className='grid w-full justify-items-end'>
-          <label htmlFor='email' className='block text-sm text-accent7'>
-            brief description
+          <label
+            htmlFor='email'
+            className={`${
+              props.errors.includes('description') ? 'text-errorDefault' : 'text-accent7'
+            } block text-sm`}>
+            {props.errors.includes('description') ? (
+              <p>invalid input for description</p>
+            ) : (
+              <p>brief description</p>
+            )}
           </label>
           <div className='w-5/6 mt-1'>
             <input
               type='text'
               name='description'
               id='description'
-              className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
+              className={`${
+                props.errors.includes('description') ? 'border-errorDefault' : 'border-accent6'
+              } block w-full shadow-sm text-accent7 bg-background sm:text-sm`}
               placeholder='soon-to-be #1 nft collection'
               onChange={(e) => props.setDescription(e.target.value)}
               value={props.description}
@@ -317,31 +339,46 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
           </div>
         </div>
         <div className='grid w-full justify-items-end'>
-          <label htmlFor='email' className='block text-sm text-accent7'>
-            amount of nfts
+          <label
+            htmlFor='email'
+            className={`${
+              props.errors.includes('amount') ? 'text-errorDefault' : 'text-accent7'
+            } block text-sm`}>
+            {props.errors.includes('amount') ? (
+              <p>invalid input for the amount</p>
+            ) : (
+              <p>amount of nfts</p>
+            )}
           </label>
           <div className='w-5/6 mt-1'>
             <input
               type='text'
               name='amount'
               id='amount'
-              className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
-              placeholder='3333'
-              onChange={(e) => props.setAmount(Number(e.target.value))}
+              className={`${
+                props.errors.includes('amount') ? 'border-errorDefault' : 'border-accent6'
+              } block w-full shadow-sm text-accent7 bg-background sm:text-sm`}
+              onChange={(e) => props.setAmount(e.target.value)}
               value={props.amount}
             />
           </div>
         </div>
         <div className='grid w-full justify-items-end'>
-          <label htmlFor='email' className='block text-sm text-accent7'>
-            base uri
+          <label
+            htmlFor='email'
+            className={`${
+              props.errors.includes('baseUri') ? 'text-errorDefault' : 'text-accent7'
+            } block text-sm`}>
+            {props.errors.includes('baseUri') ? <p>invalid input for base uri</p> : <p>base uri</p>}
           </label>
           <div className='w-5/6 mt-1'>
             <input
               type='text'
               name='baseUri'
               id='baseUri'
-              className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
+              className={`${
+                props.errors.includes('baseUri') ? 'border-errorDefault' : 'border-accent6'
+              } block w-full shadow-sm text-accent7 bg-background sm:text-sm`}
               placeholder='ipfs://newuritoreplace'
               onChange={(e) => props.setBaseUri(e.target.value)}
               value={props.baseUri}
@@ -353,33 +390,53 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
         <div className='grid justify-end justify-self-end justify-items-end'>
           <div className='grid w-5/6 grid-cols-2'>
             <div className='w-2/3'>
-              <label htmlFor='email' className='block text-sm text-right text-accent7'>
-                width (px)
+              <label
+                htmlFor='width'
+                className={`${
+                  props.errors.includes('width') ? 'text-errorDefault' : 'text-accent7'
+                } block text-sm`}>
+                {props.errors.includes('width') ? (
+                  <p>invalid input for width</p>
+                ) : (
+                  <p>width (px)</p>
+                )}
               </label>
               <div className='mt-1'>
                 <input
                   type='text'
                   name='width'
                   id='width'
-                  className='block w-full shadow-sm bg-background text-accent7 border-accent6 sm:text-sm'
+                  className={`${
+                    props.errors.includes('width') ? 'border-errorDefault' : 'border-accent6'
+                  } block w-full shadow-sm text-accent7 bg-background sm:text-sm`}
                   placeholder='512'
-                  onChange={(e) => props.setWidth(Number(e.target.value))}
+                  onChange={(e) => props.setWidth(e.target.value)}
                   value={props.width}
                 />
               </div>
             </div>
             <div className='w-2/3 justify-self-end'>
-              <label htmlFor='email' className='block text-sm text-right text-accent7'>
-                height (px)
+              <label
+                htmlFor='height'
+                className={`${
+                  props.errors.includes('height') ? 'text-errorDefault' : 'text-accent7'
+                } block text-sm`}>
+                {props.errors.includes('height') ? (
+                  <p>invalid input for height</p>
+                ) : (
+                  <p>height (px)</p>
+                )}
               </label>
               <div className='mt-1'>
                 <input
                   type='text'
                   name='height'
                   id='height'
-                  className='block w-full shadow-sm bg-background text-accent7 border-accent6 sm:text-sm'
+                  className={`${
+                    props.errors.includes('height') ? 'border-errorDefault' : 'border-accent6'
+                  } block w-full shadow-sm text-accent7 bg-background sm:text-sm`}
                   placeholder='512'
-                  onChange={(e) => props.setHeight(Number(e.target.value))}
+                  onChange={(e) => props.setHeight(e.target.value)}
                   value={props.height}
                 />
               </div>
@@ -388,17 +445,27 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
         </div>
         <div className='py-5'>
           <div className='grid w-full justify-items-end'>
-            <label htmlFor='email' className='block text-sm text-accent7'>
-              dna torrance
+            <label
+              htmlFor='dnaTorrance'
+              className={`${
+                props.errors.includes('dnaTorrance') ? 'text-errorDefault' : 'text-accent7'
+              } block text-sm`}>
+              {props.errors.includes('dnaTorrance') ? (
+                <p>invalid input for dna torrance</p>
+              ) : (
+                <p>dna torrance</p>
+              )}
             </label>
             <div className='w-5/6 mt-1'>
               <input
                 type='email'
                 name='email'
                 id='email'
-                className='block w-full shadow-sm text-accent7 bg-background border-accent6 sm:text-sm'
+                className={`${
+                  props.errors.includes('dnaTorrance') ? 'border-errorDefault' : 'border-accent6'
+                } block w-full shadow-sm text-accent7 bg-background sm:text-sm`}
                 placeholder='10000'
-                onChange={(e) => props.setDnaTorrance(Number(e.target.value))}
+                onChange={(e) => props.setDnaTorrance(e.target.value)}
                 value={props.dnaTorrance}
               />
             </div>

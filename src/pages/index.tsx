@@ -34,34 +34,78 @@ export default function Example() {
   const [network, setNetwork] = useState('eth')
   const [collectionName, setCollectionName] = useState('')
   const [description, setDescription] = useState('')
-  const [amount, setAmount] = useState<number>(10)
+  const [amount, setAmount] = useState<string>('10')
   const [baseUri, setBaseUri] = useState('')
-  const [width, setWidth] = useState(512)
-  const [height, setHeight] = useState(512)
-  const [dnaTorrance, setDnaTorrance] = useState(10000)
+  const [width, setWidth] = useState('512')
+  const [height, setHeight] = useState('512')
+  const [dnaTorrance, setDnaTorrance] = useState('10000')
+
+  const [errors, setErrors] = useState<Array<any>>([])
+
+  const updateErrors = (_errors: Array<any>) => {
+    setErrors(_errors)
+  }
 
   const updateNetwork = (_network: string) => {
+    const newErrors = errors.filter((e) => {
+      return e !== 'network'
+    })
+    setErrors(newErrors)
     setNetwork(_network)
   }
   const updateCollectionName = (_collectionName: string) => {
+    const newErrors = errors.filter((e) => {
+      return e !== 'collectionName'
+    })
+    setErrors(newErrors)
     setCollectionName(_collectionName)
   }
   const updateDescription = (_description: string) => {
+    const newErrors = errors.filter((e) => {
+      return e !== 'description'
+    })
+    setErrors(newErrors)
     setDescription(_description)
   }
-  const updateAmount = (_amount: number) => {
-    setAmount(_amount)
+  const updateAmount = (_amount: string) => {
+    const nums = /^[0-9]*\.?[0-9]*$/
+    if (nums.test(_amount) || _amount === '') {
+      const newErrors = errors.filter((e) => {
+        return e !== 'amount'
+      })
+      setErrors(newErrors)
+      setAmount(_amount)
+    }
   }
   const updateBaseUri = (_baseUri: string) => {
+    const newErrors = errors.filter((e) => {
+      return e !== 'baseUri'
+    })
+    setErrors(newErrors)
     setBaseUri(_baseUri)
   }
-  const updateWidth = (_width: number) => {
-    setWidth(_width)
+  const updateWidth = (_width: string) => {
+    const nums = /^[0-9]*\.?[0-9]*$/
+    if (nums.test(_width) || _width === '') {
+      const newErrors = errors.filter((e) => {
+        return e !== 'width'
+      })
+      setErrors(newErrors)
+      setWidth(_width)
+    }
   }
-  const updateHeight = (_height: number) => {
+  const updateHeight = (_height: string) => {
+    const newErrors = errors.filter((e) => {
+      return e !== 'height'
+    })
+    setErrors(newErrors)
     setHeight(_height)
   }
-  const updateDnaTorrance = (_dnaTorrance: number) => {
+  const updateDnaTorrance = (_dnaTorrance: string) => {
+    const newErrors = errors.filter((e) => {
+      return e !== 'dnaTorrance'
+    })
+    setErrors(newErrors)
     setDnaTorrance(_dnaTorrance)
   }
 
@@ -228,6 +272,7 @@ export default function Example() {
               aria-labelledby='primary-heading'
               className='flex flex-col flex-1 h-full min-w-0 overflow-y-auto lg:order-last bg-accent1'>
               <DisplayDataBar
+                updateErrors={updateErrors}
                 network={network}
                 collectionName={collectionName}
                 description={description}
@@ -244,6 +289,8 @@ export default function Example() {
             <aside className='hidden lg:block lg:flex-shrink-0 lg:order-first'>
               <div className='relative flex flex-col h-full overflow-y-auto border-r w-96 bg-accent1 border-accent2'>
                 <ConfigurationBar
+                  errors={errors}
+                  updateErrors={updateErrors}
                   setNetwork={updateNetwork}
                   setCollectionName={updateCollectionName}
                   setDescription={updateDescription}
