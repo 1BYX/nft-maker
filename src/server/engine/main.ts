@@ -201,7 +201,6 @@ const GENERATE = async (
       edition: _edition,
       date: dateTime,
       attributes: attributesList,
-      compiler: 'HashLips Art Engine',
     }
     if (network == 'sol') {
       tempMetadata = {
