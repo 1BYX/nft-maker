@@ -178,27 +178,6 @@ export default function Example() {
                       </div>
                     </nav>
                   </div>
-                  <div className='flex flex-shrink-0 p-4 border-t border-accent2'>
-                    <Link className='flex-shrink-0 block group' href='/'>
-                      <div className='flex items-center'>
-                        <div>
-                          <img
-                            className='inline-block w-10 h-10 rounded-full'
-                            src={user.imageUrl}
-                            alt=''
-                          />
-                        </div>
-                        <div className='ml-3'>
-                          <p className='text-base text-gray-700 group-hover:text-gray-900'>
-                            {user.name}
-                          </p>
-                          <p className='text-sm text-gray-500 group-hover:text-gray-700'>
-                            Account Settings
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
                 </Dialog.Panel>
               </Transition.Child>
               <div className='flex-shrink-0 w-14' aria-hidden='true'>
@@ -221,28 +200,13 @@ export default function Example() {
                 <nav aria-label='Sidebar' className='flex flex-col items-center py-6 space-y-3'>
                   {navigation.map((item) => (
                     <Link href={item.href} key={item.name}>
-                      <div className='flex items-center p-4 text-gray-300 rounded-lg cursor-pointer hover:bg-accent2'>
+                      <div className='flex items-center p-4 rounded-lg cursor-pointer text-accent7 hover:bg-accent2'>
                         <item.icon className='w-6 h-6' aria-hidden='true' />
                         <span className='sr-only'>{item.name}</span>
                       </div>
                     </Link>
                   ))}
                 </nav>
-              </div>
-              <div className='flex flex-shrink-0 pb-5'>
-                <Link href='#'>
-                  <div className='flex-shrink-0 w-full cursor-pointer'>
-                    <img
-                      className='block w-10 h-10 mx-auto rounded-full'
-                      src={user.imageUrl}
-                      alt=''
-                    />
-                    <div className='sr-only'>
-                      <p>{user.name}</p>
-                      <p>Account settings</p>
-                    </div>
-                  </div>
-                </Link>
               </div>
             </div>
           </div>
