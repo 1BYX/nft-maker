@@ -134,7 +134,7 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
 
       const layers = getLayers()
 
-      if (layers && layers.length < 0) {
+      if (layers && layers.length > 0) {
         try {
           GENERATE(
             layers,
@@ -163,6 +163,7 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
         }
       } else {
         updateLayersError()
+        console.log('layers -> ', layers)
       }
     } else {
       config.updateErrors(errors)

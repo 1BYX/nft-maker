@@ -63,7 +63,7 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
         if (reader.result && typeof reader.result === 'string') {
           const formatArray = acceptedFiles[i].name.split('.')
           const format = formatArray[formatArray.length - 1]
-          if (format !== 'png' && format !== 'jpeg') {
+          if (format !== 'png' && format !== 'jpeg' && format !== 'jpg') {
             setShowFormatErrorNotification(true)
             setTimeout(() => {
               setShowFormatErrorNotification(false)
