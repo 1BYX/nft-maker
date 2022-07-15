@@ -46,6 +46,7 @@ export default function Example() {
   const [errors, setErrors] = useState<Array<any>>([])
 
   const updateErrors = (_errors: Array<any>) => {
+    setShowConfig(true)
     setErrors(_errors)
   }
 
@@ -151,7 +152,7 @@ export default function Example() {
                         type='button'
                         className='flex items-center justify-center w-10 h-10 ml-1'
                         onClick={() => setMobileMenuOpen(false)}>
-                        <span className='sr-only'>Close hi sidebar</span>
+                        <span className='sr-only'>Close sidebar</span>
                         <XIcon className='w-6 h-6 text-white' aria-hidden='true' />
                       </button>
                     </div>

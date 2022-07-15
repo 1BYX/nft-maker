@@ -274,7 +274,8 @@ const GENERATE = async (
         failedCount++
         if (failedCount >= uniqueDnaTorrance) {
           updateDNAerror()
-          break
+          updateIsFinishedGenerating(true)
+          return
         }
       }
     }

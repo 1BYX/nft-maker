@@ -37,8 +37,11 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
   const [DNAerror, setDNAerror] = useState(false)
 
   const updateDNAerror = () => {
-    console.log('setting dna error to true')
     setDNAerror(true)
+    setShowProgress(false)
+    setTimeout(() => {
+      setDNAerror(false)
+    }, 6000)
   }
 
   const validateConfig = () => {
@@ -233,7 +236,7 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
           </button>
         </div>
       </div>
-      {isFinishedGenerating && generatedArrays.imageArray.length > 0 ? (
+      {isFinishedGenerating && generatedArrays.imageArray.length > 0 && previewArray.length > 0 ? (
         <div className='grid w-full'>
           <div className='grid w-full border-b border-accent2'>
             <h1 className='pt-8 pl-8 text-3xl text-accent7'>preview</h1>
