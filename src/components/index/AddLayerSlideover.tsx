@@ -302,14 +302,17 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                         <ul className='w-full mt-8 text-accent6'>
                           <li>- upload multiple files</li>
                           <br></br>
-                          <li>- layer will have the name of the uploaded folder</li>
-                          <br></br>
-                          <li>- order of the layers will determine stacking order</li>
+                          <li>
+                            - the layers order will determine the image stacking order (the top
+                            layer will be in the very back of a generated image, so it{"'"}s
+                            reocommended to use it as a background), you can rearrange them by
+                            dragging
+                          </li>
                           <br></br>
                           <li>
                             - if you want to add rarity to your attributes, do so via <br></br> #
                             {'<occurence percentage>'} after the name of the attribute, followed by
-                            .png
+                            .png or .jpeg
                           </li>
                           <br></br>
                           <li className='ml-8'>
@@ -326,6 +329,8 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                             - if you want to delete or add images to layers later, you can do so by
                             navigating to that layer on the left
                           </li>
+                          <br></br>
+                          <li>- only images of .png or .jpeg format are supported</li>
                         </ul>
                         {/* /End replace */}
                       </div>
