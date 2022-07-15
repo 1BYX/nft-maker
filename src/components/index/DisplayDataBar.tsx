@@ -29,7 +29,6 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
 
   const [previewArray, setPreviewArray] = useState<Array<string | undefined>>([])
   const [isFinishedGenerating, setIsFinishedGenerating] = useState(true)
-  const [isCancelled, setIsCancelled] = useState(false)
 
   const toggleShowProgress = (show: boolean) => {
     setShowProgress(show)
@@ -105,16 +104,11 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
     setProgress(percentage)
   }
 
-  const getCancelFlag = () => {
-    return isCancelled
-  }
-
   const generate = async () => {
     setDNAerror(false)
     const errors = validateConfig()
     if (errors.length === 0) {
       setIsFinishedGenerating(false)
-      setIsCancelled(false)
       setShowProgress(true)
       const getLayers = () => {
         const unformattedLayers = localStorage.getItem('layers')
@@ -147,7 +141,6 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
           updateIsFinishedGenerating,
           updatePercentage,
           toggleShowProgress,
-          getCancelFlag,
           updateDNAerror
         )
       } catch (err) {
@@ -161,7 +154,6 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
   const generateSample = () => {
     setDNAerror(false)
     setIsFinishedGenerating(false)
-    setIsCancelled(false)
     setShowProgress(true)
     GENERATE(
       sampleLayers,
@@ -183,7 +175,6 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
       updateIsFinishedGenerating,
       updatePercentage,
       toggleShowProgress,
-      getCancelFlag,
       updateDNAerror
     )
   }
@@ -211,16 +202,6 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
             </button>
           </div>
         )}
-        {!isFinishedGenerating ? (
-          <div className='pr-8 w-max justify-self-end'>
-            <button
-              onClick={() => setIsCancelled(true)}
-              id='cancelNftGeneration'
-              className='px-2 py-1 border bg-background border-accent7 text-accent7'>
-              cancel
-            </button>
-          </div>
-        ) : null}
         <div className='w-max justify-self-end'>
           <button
             type='button'

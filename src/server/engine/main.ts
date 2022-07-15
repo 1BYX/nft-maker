@@ -73,7 +73,6 @@ const GENERATE = async (
   updateIsFinishedGenerating: (fnished: boolean) => void,
   updatePercentage: (percentage: number) => void,
   toggleShowProgress: (show: boolean) => void,
-  getCancelFlag: () => boolean,
   updateDNAerror: () => void
 ) => {
   const {
@@ -90,15 +89,6 @@ const GENERATE = async (
   let step: number
   let percentage: number = 0
   let editionCount = 1
-
-  const cancelButton = document.getElementById('cancelNftGeneration')
-  cancelButton?.addEventListener('click', () => {
-    imageArray = []
-    jsonArray = []
-    jsonSingleFile = ''
-    editionCount = config.layerConfigurations.growEditionSizeTo
-    return
-  })
 
   if (layerConfigurations.growEditionSizeTo >= 10) {
     step = Math.floor(layerConfigurations.growEditionSizeTo / 10)
@@ -404,13 +394,6 @@ const GENERATE = async (
     setTimeout(() => {
       toggleShowProgress(false)
     }, 1000)
-    cancelButton?.removeEventListener('click', () => {
-      imageArray = []
-      jsonArray = []
-      jsonSingleFile = ''
-      editionCount = config.layerConfigurations.growEditionSizeTo
-      return
-    })
   }
 
   const saveMetaDataSingleFile = (_editionCount: number) => {
