@@ -236,8 +236,8 @@ export default function Example() {
 
           <main
             className={`grid ${
-              showConfig ? 'grid-rows-[]' : 'grid-rows-[max-content_auto]'
-            } h-full lg:grid-cols-[max-content_auto] lg:grid-rows-1 overlow-scroll lg:overflow-hidden`}>
+              showConfig ? 'grid-rows-[]' : 'grid-rows-[max-content_100vh]'
+            } h-full lg:grid-cols-[max-content_auto] lg:grid-rows-1 lg:overflow-hidden`}>
             {/* Primary column */}
             <div className='grid w-full lg:hidden grid-cols-[max-content_max-content] gap-4 justify-end p-8 text-2xl border-y border-accent2 bg-accent1 text-accent7 justify-items-end'>
               <div
