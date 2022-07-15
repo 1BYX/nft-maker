@@ -1,12 +1,13 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { XIcon } from '@heroicons/react/outline'
+import { FingerPrintIcon, XIcon } from '@heroicons/react/outline'
 import _logger from 'next-auth/utils/logger'
 import { IinitializeLayerData, IinitialLayer, IlayerData } from '../../interfaces/Ilayers'
 import { useDropzone } from 'react-dropzone'
 import { TrueLiteral } from 'typescript'
 import ErrorNotification from '../commons/errorNotification'
+import FormatErrorNotification from '../commons/formatErrorNotification'
 
 interface IAddLayerSlideover {
   slideoverOpen: {
@@ -34,6 +35,7 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
   >([])
 
   const [showNotification, setShowNotification] = useState(false)
+  const [showFormatErrorNotification, setShowFormatErrorNotification] = useState(false)
 
   const closeShow = () => {
     setShowNotification(false)
@@ -59,7 +61,15 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
 
       reader.addEventListener('load', () => {
         if (reader.result && typeof reader.result === 'string') {
-          console.log('reader result => ', reader.result)
+          const formatArray = acceptedFiles[i].name.split('.')
+          const format = formatArray[formatArray.length - 1]
+          if (format !== 'png' && format !== 'jpeg') {
+            setShowFormatErrorNotification(true)
+            setTimeout(() => {
+              setShowFormatErrorNotification(false)
+            }, 6000)
+            return
+          }
           setTempLayerAttributes((prevArray) => [
             ...prevArray,
             {
@@ -77,7 +87,6 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
 
       reader.removeEventListener('load', () => {
         if (reader.result && typeof reader.result === 'string') {
-          console.log('reader result => ', reader.result)
           setTempLayerAttributes((prevArray) => [
             ...prevArray,
             {
@@ -98,6 +107,7 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
     setShowNotification(false)
     setLayerNameError(false)
     toggleSlideover(false)
+    setTempLayerAttributes([])
   }
 
   const saveSubmission = () => {
@@ -125,7 +135,6 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
     const unformattedLayers = localStorage.getItem('layers')
 
     if (unformattedLayers) {
-      console.log('made it to if in saveSubmission function')
       let layers = JSON.parse(unformattedLayers)
 
       layers.forEach((l: any) => {
@@ -180,7 +189,6 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
         }
       }
     } else {
-      console.log('made it to else in saveSubmission function')
       let newLayers = [
         {
           layerName: layerName,
@@ -336,6 +344,12 @@ const AddLayerSlideover: React.FC<IAddLayerSlideover> = ({
                         save
                       </button>
                       <ErrorNotification show={showNotification} closeShow={closeShow} />
+                      <FormatErrorNotification
+                        show={showFormatErrorNotification}
+                        closeShow={() => {
+                          setShowFormatErrorNotification(false)
+                        }}
+                      />
                     </div>
                   </div>
                 </Dialog.Panel>

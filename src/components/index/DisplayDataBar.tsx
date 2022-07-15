@@ -85,7 +85,6 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
         }
         setPreviewArray(previews)
       }
-      console.log('previewArray -> ', previewArray)
     }
     determinePreviewArray()
   }, [isFinishedGenerating])

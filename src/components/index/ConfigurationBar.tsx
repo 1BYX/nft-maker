@@ -95,7 +95,6 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
   }
 
   const updateLayerOptions = (_layerName: string) => {
-    console.log('clicked')
     if (layerOptions.layerName !== _layerName && layerOptions.layerName !== '') {
       setLayerOptions({
         layerName: '',
@@ -124,7 +123,6 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
     const unformattedLayers = localStorage.getItem('layers')
     if (unformattedLayers) {
       const layers = JSON.parse(unformattedLayers)
-      console.log('layers -> ', layers)
       const newLayers = layers
       for (let i = 0; i < layers.length; i++) {
         if (layers[i].layerName == _layerName) {
@@ -136,7 +134,6 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
             return la.name !== _attributeName
           })
           layers[i].attributes = newTargetLayerAttributes
-          console.log('newLayers -> ', newLayers)
           localStorage.setItem('layers', JSON.stringify(newLayers))
           setLayerData(newLayers)
         }
@@ -146,10 +143,8 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
   }
 
   const deleteLayer = (_layerName: string) => {
-    console.log('delete')
     const unformattedLayers = localStorage.getItem('layers')
     if (unformattedLayers) {
-      console.log('made it to if on delete')
       let layers = JSON.parse(unformattedLayers)
       const newLayers = layers.filter((obj: any) => {
         return obj.layerName !== _layerName
@@ -171,7 +166,6 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
       layerName: '',
       isOpen: false,
     })
-    console.log('closing')
   })
 
   return (
