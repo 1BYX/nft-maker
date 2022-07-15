@@ -126,7 +126,7 @@ export default function Example() {
               leave='transition-opacity ease-linear duration-300'
               leaveFrom='opacity-100'
               leaveTo='opacity-0'>
-              <div className='fixed inset-0 bg-opacity-50 bg-background' />
+              <div className='fixed inset-0 bg-opacity-90 bg-background' />
             </Transition.Child>
 
             <div className='fixed inset-0 z-40 flex'>
