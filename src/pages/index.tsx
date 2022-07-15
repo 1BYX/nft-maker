@@ -151,7 +151,7 @@ export default function Example() {
                         type='button'
                         className='flex items-center justify-center w-10 h-10 ml-1'
                         onClick={() => setMobileMenuOpen(false)}>
-                        <span className='sr-only'>Close sidebar</span>
+                        <span className='sr-only'>Close hi sidebar</span>
                         <XIcon className='w-6 h-6 text-white' aria-hidden='true' />
                       </button>
                     </div>
