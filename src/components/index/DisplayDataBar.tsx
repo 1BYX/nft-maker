@@ -4,6 +4,7 @@ import GENERATE from '../../server/engine/main'
 import { IoutputArrays, TimageArray } from '../../interfaces/outputArrays'
 import { sampleLayers } from '../filetransfer/temp-storage/sampleLayers'
 import DNAerrorNotification from '../commons/DNAerrorNotification'
+import LayersErrorNotification from '../commons/LayersError'
 
 type IDisplayDataBar = {
   updateErrors: (errors: Array<any>) => void
@@ -33,7 +34,18 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
   const toggleShowProgress = (show: boolean) => {
     setShowProgress(show)
   }
+
+  const [layersError, setLayersError] = useState(false)
   const [DNAerror, setDNAerror] = useState(false)
+
+  const updateLayersError = () => {
+    setLayersError(true)
+    setShowProgress(false)
+    setTimeout(() => {
+      setLayersError(false)
+    }, 6000)
+    updateIsFinishedGenerating(true)
+  }
 
   const updateDNAerror = () => {
     setDNAerror(true)
@@ -115,36 +127,42 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
         if (unformattedLayers) {
           const layers = JSON.parse(unformattedLayers)
           return layers
+        } else {
+          return undefined
         }
       }
 
       const layers = getLayers()
 
-      try {
-        GENERATE(
-          layers,
-          {
-            format: {
-              width: Number(config.width),
-              height: Number(config.height),
+      if (layers && layers.length < 0) {
+        try {
+          GENERATE(
+            layers,
+            {
+              format: {
+                width: Number(config.width),
+                height: Number(config.height),
+              },
+              baseUri: config.baseUri,
+              description: config.description,
+              uniqueDnaTorrance: Number(config.dnaTorrance),
+              namePrefix: config.collectionName,
+              network: config.network,
+              layerConfigurations: {
+                growEditionSizeTo: Number(config.amount),
+              },
             },
-            baseUri: config.baseUri,
-            description: config.description,
-            uniqueDnaTorrance: Number(config.dnaTorrance),
-            namePrefix: config.collectionName,
-            network: config.network,
-            layerConfigurations: {
-              growEditionSizeTo: Number(config.amount),
-            },
-          },
-          updateGeneratedArrays,
-          updateIsFinishedGenerating,
-          updatePercentage,
-          toggleShowProgress,
-          updateDNAerror
-        )
-      } catch (err) {
-        console.log('error -> ', err)
+            updateGeneratedArrays,
+            updateIsFinishedGenerating,
+            updatePercentage,
+            toggleShowProgress,
+            updateDNAerror
+          )
+        } catch (err) {
+          console.log('error -> ', err)
+        }
+      } else {
+        updateLayersError()
       }
     } else {
       config.updateErrors(errors)
@@ -249,6 +267,7 @@ const DisplayDataBar: React.FC<IDisplayDataBar> = (config) => {
         closeShow={() => setDNAerror(false)}
         amount={Number(config.amount)}
       />
+      <LayersErrorNotification show={layersError} closeShow={() => setLayersError(false)} />
     </div>
   )
 }

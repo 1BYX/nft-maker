@@ -50,7 +50,7 @@ const NetworkDropdown: React.FC<INetworkDropdown> = ({ chooseNetwork }) => {
               {({ active }) => (
                 <div className='flex items-center px-4 py-2 text-sm text-accent4 group'>
                   <img src='../../sol.png' className='w-5 h-5 mr-3' />
-                  sol - not yet supported
+                  sol - coming soon...
                 </div>
               )}
             </Menu.Item>

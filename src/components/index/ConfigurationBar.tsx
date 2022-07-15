@@ -49,6 +49,8 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
     isOpen: false,
   })
 
+  const [isConfigSaved, setIsConfigSaved] = useState(false)
+
   useEffect(() => {
     const unformattedLayers = localStorage.getItem('layers')
     if (unformattedLayers) {
@@ -56,6 +58,19 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
       setLayerData(layers)
     }
     setIsBrowser(typeof window)
+
+    const unformattedConfig = localStorage.getItem('config')
+    if (unformattedConfig) {
+      let config = JSON.parse(unformattedConfig)
+      props.setNetwork(config[0].value)
+      props.setCollectionName(config[1].value)
+      props.setDescription(config[2].value)
+      props.setAmount(config[3].value)
+      props.setBaseUri(config[4].value)
+      props.setWidth(config[5].value)
+      props.setHeight(config[6].value)
+      props.setDnaTorrance(config[7].value)
+    }
   }, [])
 
   const toggleSlideover = (state: boolean) => {
@@ -167,6 +182,45 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
       isOpen: false,
     })
   })
+
+  const updateConfig = () => {
+    setIsConfigSaved(true)
+    const config = [
+      {
+        name: 'network',
+        value: props.network,
+      },
+      {
+        name: 'collectionName',
+        value: props.collectionName,
+      },
+      {
+        name: 'description',
+        value: props.description,
+      },
+      {
+        name: 'amount',
+        value: props.amount,
+      },
+      {
+        name: 'baseUri',
+        value: props.baseUri,
+      },
+      {
+        name: 'width',
+        value: props.width,
+      },
+      {
+        name: 'height',
+        value: props.height,
+      },
+      {
+        name: 'dnaTorrance',
+        value: props.dnaTorrance,
+      },
+    ]
+    localStorage.setItem('config', JSON.stringify(config))
+  }
 
   return (
     <div className='w-full h-full'>
@@ -528,6 +582,26 @@ const ConfigurationBar: React.FC<IConfigurationBar> = (props) => {
                 value={props.dnaTorrance}
               />
             </div>
+          </div>
+          <div className='pt-10 pb-5 grid grid-cols-[max-content_max-content] justify-end'>
+            {isConfigSaved ? (
+              <span className='text-successDefault grid items-center pr-4'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-6 w-6'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                  strokeWidth={2}>
+                  <path strokeLinecap='round' strokeLinejoin='round' d='M5 13l4 4L19 7' />
+                </svg>
+              </span>
+            ) : null}
+            <button
+              onClick={updateConfig}
+              className='w-max py-2.5 font-medium px-4 bg-accent7 hover:bg-accent5 text-sm text-background'>
+              save
+            </button>
           </div>
         </div>
       </div>

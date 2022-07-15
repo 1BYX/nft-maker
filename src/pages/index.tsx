@@ -115,7 +115,7 @@ export default function Example() {
 
   return (
     <>
-      <div className='flex h-full'>
+      <div className='grid grid-cols-max-content_max-content_auto] lg:flex h-full'>
         <Transition.Root show={mobileMenuOpen} as={Fragment}>
           <Dialog as='div' className='relative z-40 lg:hidden' onClose={setMobileMenuOpen}>
             <Transition.Child
@@ -236,7 +236,7 @@ export default function Example() {
 
           <main
             className={`grid ${
-              showConfig ? 'grid-rows-[max-content_auto_auto]' : 'grid-rows-[max-content_auto]'
+              showConfig ? 'grid-rows-[]' : 'grid-rows-[max-content_auto]'
             } h-full lg:grid-cols-[max-content_auto] lg:grid-rows-1 overlow-scroll lg:overflow-hidden`}>
             {/* Primary column */}
             <div className='grid w-full lg:hidden grid-cols-[max-content_max-content] gap-4 justify-end p-8 text-2xl border-y border-accent2 bg-accent1 text-accent7 justify-items-end'>
@@ -271,7 +271,7 @@ export default function Example() {
               className={`${
                 showConfig ? 'block' : 'hidden'
               } lg:block lg:flex-shrink-0 lg:order-first`}>
-              <div className='relative flex flex-col w-full h-full overflow-y-auto border-b lg:border-r lg:border-b-0 lg:w-96 bg-accent1 border-accent2'>
+              <div className='relative flex pb-12 lg:pb-0 flex-col w-full h-full overflow-y-scroll border-b lg:border-r lg:border-b-0 lg:w-96 bg-accent1 border-accent2'>
                 <ConfigurationBar
                   errors={errors}
                   updateErrors={updateErrors}
